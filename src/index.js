@@ -8,6 +8,10 @@ export default function generateRootContainer(React, Relay) {
     }
 
     componentWillReceiveProps(props) {
+      if (this.props.isTransitioning) {
+        return;
+      }
+
       this.setState(generateContainer(React, Relay, props));
     }
 
@@ -18,7 +22,7 @@ export default function generateRootContainer(React, Relay) {
         <Relay.RootContainer
           {...this.props}
           Component={Component}
-          route={{ ...route, params: this.props.params }}/>
+          route={route}/>
       );
     }
   };

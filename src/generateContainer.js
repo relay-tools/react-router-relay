@@ -1,69 +1,98 @@
+import defaultGetParams from './defaultGetParams';
 import generateNestedRenderer from './NestedRenderer';
-const invariant = require('invariant');
-
-const CACHED_CONTAINERS = {};
-
-function generateRouteName(components) {
-  return `Nested_${
-    components.map(component => component.displayName).join('_')
-  }`;
-}
+import invariant from 'invariant';
 
 export default function generateContainer(React, Relay, newProps) {
   const { branch, components } = newProps;
-  const routeName = generateRouteName(components);
-
-  if (CACHED_CONTAINERS[routeName]) {
-    return CACHED_CONTAINERS[routeName];
-  }
 
   const queries = {};
   const fragments = {};
+  const allRouteNames = [];
+  const params = {};
   let queryIdx = 0;
 
   const [, ...elems] = components.map((Component, index) => {
+    if (!Relay.isContainer(Component)) {
+      return props => <Component {...props}/>;
+    }
+
+    const componentName = Component.displayName || Component.name;
+
+    const currentNode = branch[index];
+    let { route } = currentNode;
+    const { routeClass, params: getParams = defaultGetParams} = currentNode;
+
+    // Not using XOR here allows better invariant error messages.
+    invariant(
+      route || routeClass,
+      `relay-nested-routes: Route with component \`${componentName}\` is `+
+      `missing a route or routeClass prop: ` +
+      `<Route component={${componentName}} route={...}/> or` +
+      `<Route component={${componentName}} routeClass={...}/> or`
+    );
+    invariant(
+      !(route && routeClass),
+      `relay-nested-routes: Route with component \`${componentName}\` ` +
+      `specifies both route and routeClass`
+    );
+
+    const routeParams = getParams({
+      params: newProps.params,
+      query: newProps.location.query
+    });
+    Object.keys(routeParams).forEach(paramKey => {
+      if (params[paramKey !== undefined]) {
+        invariant(
+          params[paramKey] === routeParams[paramKey],
+          `relay-nested-routes: Route with component \`${componentName}\`` +
+          ` has conflict on param \`${paramKey}\``
+        );
+      }
+
+      params[paramKey] = routeParams[paramKey];
+    });
+
+    // Explicitly constructing the route from the class allows us to re-use
+    // any invariants like required params on the route constructor.
+    if (routeClass) {
+      route = new routeClass(params);
+    }
+
+    const routeName = route.name;
+    allRouteNames.push(routeName);
+
     const fragmentResolvers = [];
 
-    if (Relay.isContainer(Component)) {
-      const { route } = branch[index];
-      invariant(
-        route,
-        `relay-nested-routes: Route with component ` +
-        `\`${Component.displayName}\` is missing a route prop: ` +
-        `<Route component={${Component.displayName}} route={...}/>`
-      );
-
-      Object.keys(route.queries).forEach(queryName => {
-        const newQueryName = `Nested_${route.name}_${queryName}_${++queryIdx}`;
-        fragments[newQueryName] = queries[newQueryName] = (_, ...args) => {
-          return route.queries[queryName](Component, ...args);
-        };
-        fragmentResolvers.push({
-          prop: queryName,
-          resolve: function getLocalProp() {
-            return this.props[newQueryName];
-          }
-        });
+    Object.keys(route.queries).forEach(queryName => {
+      const newQueryName = `Nested_${routeName}_${queryName}_${++queryIdx}`;
+      fragments[newQueryName] = queries[newQueryName] = (_, ...args) => {
+        return route.queries[queryName](Component, ...args);
+      };
+      fragmentResolvers.push({
+        prop: queryName,
+        resolve: function getLocalProp() {
+          return this.props[newQueryName];
+        }
       });
-    }
+    });
 
     return function ComponentGenerator(props) {
       fragmentResolvers.forEach(fragment => {
         props[fragment.prop] = fragment.resolve.call(this);
       });
 
-      return <Component {...props}/>;
+      return <Component {...props} {...routeParams}/>;
     };
   });
 
   const route = {
-    name: routeName,
-    queries
+    name: ['Nested', ...allRouteNames].join('_'),
+    queries,
+    params
   };
 
-  const state = CACHED_CONTAINERS[routeName] = {
+  return {
     Component: generateNestedRenderer(React, elems, fragments),
     route
   };
-  return state;
 }
