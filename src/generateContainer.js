@@ -1,6 +1,6 @@
 import generateNestedRenderer from './NestedRenderer';
-
 const invariant = require('invariant');
+
 const CACHED_CONTAINERS = {};
 
 function generateRouteName(components) {
@@ -26,10 +26,11 @@ export default function generateContainer(React, Relay, newProps) {
 
     if (Relay.isContainer(Component)) {
       const { route } = branch[index];
-
       invariant(
         route,
-        'Routes with Relay.Containers must include a `route` prop.'
+        `relay-nested-routes: Route with component ` +
+        `\`${Component.displayName}\` is missing a route prop: ` +
+        `<Route component={${Component.displayName}} route={...}/>`
       );
 
       Object.keys(route.queries).forEach(queryName => {
