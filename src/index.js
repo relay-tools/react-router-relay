@@ -2,10 +2,12 @@ const invariant = require('invariant');
 
 // Super nasty way to rename the fragment until facebook/relay#20 is solved.
 function patchRouteQuery(oldQueryName, newQueryName, query) {
+  /* eslint-disable no-eval */
   return eval(`(function(Relay) { return ${query.toString().replace(
     /getFragment\((\S*?)\)/,
     `getFragment(${JSON.stringify(newQueryName)})`
   )}; })`);
+  /*eslint-enable no-eval */
 }
 
 function generateRouteName(components) {
@@ -73,7 +75,7 @@ export default function generateRootContainer(React, Relay) {
               prop: queryName,
               resolve: function getLocalProp() {
                 return this.props[newQueryName];
-              },
+              }
             });
           });
         }
@@ -96,17 +98,17 @@ export default function generateRootContainer(React, Relay) {
       }
 
       const NestedRendererContainer = Relay.createContainer(NestedRenderer, {
-        fragments,
+        fragments
       });
 
       const route = {
         name: routeName,
-        queries,
+        queries
       };
 
       const state = CACHED_STATES[routeName] = {
         Component: NestedRendererContainer,
-        route,
+        route
       };
       return state;
     }
