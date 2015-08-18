@@ -4,13 +4,14 @@ import warning from 'warning';
 import generateNestedRenderer from './NestedRenderer';
 
 function getRouteName(branch) {
-  const leaf = branch[branch.length - 1];
-  const {path} = leaf;
+  const path = branch.map(leaf => leaf.path).join('');
   invariant(
     path && path.length > 0,
-    'relay-nested-routes: Leaf route with component `%s` is missing a ' +
-    '`path` prop required by relay-nested-routes.',
-    leaf.displayName || leaf.name
+    'relay-nested-routes: Leaf route with components `%s` is missing ' +
+    '`path` props required by relay-nested-routes.',
+    branch.map(leaf => leaf.component).map(component => {
+      return component.displayName || component.name;
+    }).join(' -> ')
   );
   return path;
 }
@@ -21,6 +22,7 @@ export default function generateContainer(React, Relay, newProps){
 
   const params = {...newProps.params, ...newProps.location.query};
   const rootQueries = {};
+  const fragmentSpecs = {};
   let queryIdx = 0;
 
   const [, ...elements] = components.map((Component, index) => {
@@ -29,33 +31,15 @@ export default function generateContainer(React, Relay, newProps){
     }
 
     const componentName = Component.displayName || Component.name;
-    const currentNode = branch[index];
-
-    const {route: Route} = currentNode;
-    let {queries} = currentNode;
+    const {queries} = branch[index];
 
     invariant(
-      Route || queries,
+      queries,
       'relay-nested-routes: Route with component `%s` is missing a ' +
-      '`queries` or `route` prop: ' +
-      '<Route component={%s} queries={...} /> or ' +
-      '<Route component={%s} route={...} />',
-      componentName,
+      '`queries` prop: <Route component={%s} queries={...} /> or ',
       componentName,
       componentName
     );
-    invariant(
-      !(Route && queries),
-      'relay-nested-routes: Route with component `%s` defines both a ' +
-      '`route` and `queries` class.',
-      componentName
-    );
-
-    if (Route) {
-      // Explicitly constructing the route from the class allows us to re-use
-      // any invariants like required params on the route constructor.
-      queries = new Route(params).queries;
-    }
 
     const fragmentResolvers = [];
     Object.keys(queries).forEach(queryName => {
@@ -73,6 +57,7 @@ export default function generateContainer(React, Relay, newProps){
       };
       rootQueries[generatedName] = (_, ...args) =>
         queries[queryName](Component, ...args);
+      fragmentSpecs[generatedName] = {Component, queryName};
       fragmentResolvers.push({queryName, resolve});
     });
 
@@ -86,7 +71,7 @@ export default function generateContainer(React, Relay, newProps){
   });
 
   return {
-    Component: generateNestedRenderer(React, elements, rootQueries),
+    Component: generateNestedRenderer(React, elements, fragmentSpecs),
     route: {
       name,
       params: params,

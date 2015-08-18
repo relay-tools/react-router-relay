@@ -4,7 +4,8 @@ Nested react-router views for Relay
 
     $ npm install --save relay-nested-routes
 
-After you've installed it, add it as a root `<Route>` to your react-router@>=1.0.0-beta3 routes like so:
+After you've installed it, add it as a root `<Route>` to your
+react-router@>=1.0.0-beta3 routes like so:
 
 ```js
 import React from 'react';
@@ -27,15 +28,14 @@ ReactDOM.render((
 ), document.getElementById('react-root'));
 ```
 
-Define a Relay.Route (or just a object containing your queries) for a
-particular `Relay.Container` needs and add it as a `route` or `queries` prop to
-any container `<Route/>`s.
+Define an object containing your queries that a particular `Relay.Container`
+needs and add it as a `queries` prop to any container `<Route/>`s.
 
 `relay-nested-routes` will automatically generate a component that includes all
 of your fragments, and a route that includes all of your root queries,
 and dispatch/render everything in one go.
 
-You can pass props like `renderLoading` by adding them as props to the
+You can also pass props like `renderLoading` by adding them as props to the
 `NestedRootContainer` route.
 
 # Todo

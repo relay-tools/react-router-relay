@@ -1,13 +1,14 @@
-export default function generateNestedRenderer(React, components, fragments) {
-  const fragmentNames = Object.keys(fragments);
+export default function generateNestedRenderer(React, components, fragmentSpecs) {
+  const fragmentNames = Object.keys(fragmentSpecs);
 
   return class NestedRenderer extends React.Component {
     static getFragmentNames() {
       return fragmentNames;
     }
 
-    static getFragment(fragmentName) {
-      return fragments[fragmentName];
+    static getFragment(proxiedFragmentName, ...args) {
+      const {Component, queryName} = fragmentSpecs[proxiedFragmentName];
+      return Component.getFragment(queryName, ...args);
     }
 
     // Hackishly satisfy isRelayContainer.
