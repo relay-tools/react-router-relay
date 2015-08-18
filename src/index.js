@@ -1,12 +1,5 @@
 const invariant = require('invariant');
 
-function patchRouteQuery(oldQueryName, newQueryName, query) {
-  return eval(`(function(Relay) { return ${query.toString().replace(
-    /getFragment\((\S*?)\)/,
-    `getFragment(${JSON.stringify(newQueryName)})`
-  )}; })`);
-}
-
 function generateRouteName(components) {
   return `Nested_${
     components.map(component => component.displayName).join('_')
@@ -17,8 +10,8 @@ const CACHED_STATES = {};
 
 export default function generateRootContainer(React, Relay) {
   return class NestedRootContainer extends React.Component {
-    constructor(props) {
-      super(props);
+    constructor(props, context) {
+      super(props, context);
       this.state = this._generateContainer(props);
     }
 
@@ -60,12 +53,9 @@ export default function generateRootContainer(React, Relay) {
           );
 
           Object.keys(route.queries).forEach(queryName => {
-            const newQueryName = `Nested_${route.routeName}_${queryName}_${++queryIdx}`;
-            queries[newQueryName] = patchRouteQuery(
-              queryName,
-              newQueryName,
-              route.queries[queryName]
-            ).call(undefined, Relay);
+            const newQueryName = `Nested_${route.name}_${queryName}_${++queryIdx}`;
+            queries[newQueryName] = () => route.queries[queryName](Component);
+
             const fragment = Component.getFragment(queryName)._fragmentGetter;
             fragments[newQueryName] = () => fragment();
             fragmentResolvers.push({
