@@ -38,7 +38,7 @@ export default function generateRootContainer(React, Relay) {
       }
 
       const queries = {};
-      const fragments = {};
+      const fragmentNames = [];
       let queryIdx = 0;
 
       const [, ...elems] = components.map((Component, index) => {
@@ -57,8 +57,7 @@ export default function generateRootContainer(React, Relay) {
             queries[newQueryName] =
               (_, ...args) => route.queries[queryName](Component, ...args);
 
-            const fragment = Component.getFragment(queryName)._fragmentGetter;
-            fragments[newQueryName] = (...args) => fragment(...args);
+            fragmentNames.push(newQueryName);
             fragmentResolvers.push({
               prop: queryName,
               resolve: function getLocalProp() {
@@ -78,6 +77,14 @@ export default function generateRootContainer(React, Relay) {
       });
 
       class NestedRenderer extends React.Component {
+        static getFragmentNames() {
+          return fragmentNames;
+        }
+
+        // Hackishly satisfy isRelayContainer.
+        static getQuery() {}
+        static getQueryNames() {}
+
         render() {
           return elems.reduceRight((children, generateComponent) => {
             return generateComponent.call(this, { children: children });
@@ -85,17 +92,13 @@ export default function generateRootContainer(React, Relay) {
         }
       }
 
-      const NestedRendererContainer = Relay.createContainer(NestedRenderer, {
-        fragments,
-      });
-
       const route = {
         name: routeName,
         queries,
       };
 
       const state = CACHED_STATES[routeName] = {
-        Component: NestedRendererContainer,
+        Component: NestedRenderer,
         route,
       };
       return state;
