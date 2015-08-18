@@ -36,9 +36,5 @@
   },
   "dependencies": {
     "invariant": "^2.1.0"
-  },
-  "peerDependencies": {
-    "react": "^0.14.0-beta3",
-    "react-relay": "^0.1.1"
   }
 }
