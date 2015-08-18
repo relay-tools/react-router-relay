@@ -7,11 +7,12 @@ Nested react-router views for Relay
 After you've installed it, add it as a root `<Route>` to your react-router@>=1.0.0-beta3 routes like so:
 
 ```js
-var React  = require('react'),
-    ReactDOM = require('react-dom'),
-    Relay  = require('react-relay');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Relay from 'react-relay';
 
-var NestedRootContainer = require('relay-nested-routes')(React, Relay);
+import RelayNestedRoutes from 'relay-nested-routes';
+var NestedRootContainer = RelayNestedRoutes(React, Relay);
 
 /* ... */
 
