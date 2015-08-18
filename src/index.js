@@ -13,9 +13,11 @@ export default function generateRootContainer(React, Relay) {
 
     render() {
       const {Component, route} = this.state;
+      const {childRoutes, component, ...props} = this.props.route;
+
       return (
         <Relay.RootContainer
-          {...this.props}
+          {...props}
           Component={Component}
           route={route}
         />
