@@ -4,15 +4,24 @@ import warning from 'warning';
 import generateNestedRenderer from './NestedRenderer';
 
 function getRouteName(branch) {
-  const path = branch.map(leaf => leaf.path).join('');
+  const path = branch
+    .map(leaf => leaf.path)
+    .filter(path => path)
+    .join('/');
+
   invariant(
     path && path.length > 0,
     'relay-nested-routes: Leaf route with components `%s` is missing ' +
     '`path` props required by relay-nested-routes.',
     branch.map(leaf => leaf.component).map(component => {
+      if (!component) {
+        return '[none]';
+      }
+
       return component.displayName || component.name;
     }).join(' -> ')
   );
+
   return path;
 }
 
