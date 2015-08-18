@@ -36,7 +36,7 @@ export default function generateContainer(React, Relay, newProps){
 
   const [, ...elements] = components.map((Component, index) => {
     if (!Relay.isContainer(Component)) {
-      return (props) => <Component {...props}/>;
+      return (props) => <Component {...props} />;
     }
 
     const componentName = Component.displayName || Component.name;
