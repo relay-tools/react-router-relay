@@ -14,7 +14,10 @@
     "url": "https://github.com/devknoll/relay-nested-routes.git"
   },
   "keywords": [
-    "relay", "react", "router", "nested"
+    "relay",
+    "react",
+    "router",
+    "nested"
   ],
   "author": "Gerald Monaco",
   "license": "MIT",

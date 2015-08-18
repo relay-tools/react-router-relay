@@ -4,27 +4,34 @@ import generateNestedRenderer from './NestedRenderer';
 
 const CACHE = {};
 
-function generateRouteName(components) {
-  return `$$_${components.map(component => component.displayName).join('_')}`;
+function getRouteName(branch) {
+  const leaf = branch[branch.length - 1];
+  const {path} = leaf;
+  invariant(
+    path && path.length > 0,
+    'relay-nested-routes: Leaf route with component `%s` is missing a ' +
+    '`path` prop required by relay-nested-routes.',
+    leaf.displayName
+  );
+  return path;
 }
 
 export default function generateContainer(React, Relay, newProps){
   const {branch, components} = newProps;
-  const name = generateRouteName(components);
+  const name = getRouteName(branch);
 
   if (CACHE[name]) {
     return CACHE[name];
   }
 
   const rootQueries = {};
-  const fragments = {};
   let queryIdx = 0;
 
   const [, ...elements] = components.map((Component, index) => {
     const fragmentResolvers = [];
 
     if (Relay.isContainer(Component)) {
-      const {queries, name: routeName} = branch[index];
+      const {queries} = branch[index];
       invariant(
         queries,
         'relay-nested-routes: Route with component `%s` is missing a ' +
@@ -34,11 +41,11 @@ export default function generateContainer(React, Relay, newProps){
       );
 
       Object.keys(queries).forEach(queryName => {
-        const generatedName = `$$_${routeName}_${queryName}_${++queryIdx}`;
+        const generatedName = `$$_${name}_${queryName}_${++queryIdx}`;
         const resolve = function() {
           return this.props[generatedName];
         };
-        fragments[generatedName] = rootQueries[generatedName] = (_, ...args) =>
+        rootQueries[generatedName] = (_, ...args) =>
           queries[queryName](Component, ...args);
         fragmentResolvers.push({queryName, resolve});
       });
@@ -54,7 +61,7 @@ export default function generateContainer(React, Relay, newProps){
   });
 
   return CACHE[name] = {
-    Component: generateNestedRenderer(React, elements, fragments),
+    Component: generateNestedRenderer(React, elements, rootQueries),
     route: {
       name,
       params: newProps.params,
