@@ -54,10 +54,11 @@ export default function generateRootContainer(React, Relay) {
 
           Object.keys(route.queries).forEach(queryName => {
             const newQueryName = `Nested_${route.name}_${queryName}_${++queryIdx}`;
-            queries[newQueryName] = () => route.queries[queryName](Component);
+            queries[newQueryName] =
+              (_, ...args) => route.queries[queryName](Component, ...args);
 
             const fragment = Component.getFragment(queryName)._fragmentGetter;
-            fragments[newQueryName] = () => fragment();
+            fragments[newQueryName] = (...args) => fragment(...args);
             fragmentResolvers.push({
               prop: queryName,
               resolve: function getLocalProp() {
