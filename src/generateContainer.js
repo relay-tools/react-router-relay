@@ -20,7 +20,7 @@ export default function generateContainer(React, Relay, newProps){
   const {branch, components} = newProps;
   const name = getRouteName(branch);
 
-  const params = {...newProps.params, ...newProps.location.query};
+  const params = {...newProps.location.query, ...newProps.params};
   const rootQueries = {};
   const fragmentSpecs = {};
   let queryIdx = 0;
