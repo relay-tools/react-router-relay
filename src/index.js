@@ -1,5 +1,6 @@
 const invariant = require('invariant');
 
+// Super nasty way to rename the fragment until facebook/relay#20 is solved.
 function patchRouteQuery(oldQueryName, newQueryName, query) {
   return eval(`(function(Relay) { return ${query.toString().replace(
     /getFragment\((\S*?)\)/,
