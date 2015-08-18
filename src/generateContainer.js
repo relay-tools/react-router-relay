@@ -1,24 +1,12 @@
 import generateNestedRenderer from './NestedRenderer';
-const invariant = require('invariant');
-
-const CACHED_CONTAINERS = {};
-
-function generateRouteName(components) {
-  return `Nested_${
-    components.map(component => component.displayName).join('_')
-  }`;
-}
+import invariant from 'invariant';
 
 export default function generateContainer(React, Relay, newProps) {
   const { branch, components } = newProps;
-  const routeName = generateRouteName(components);
-
-  if (CACHED_CONTAINERS[routeName]) {
-    return CACHED_CONTAINERS[routeName];
-  }
 
   const queries = {};
   const fragments = {};
+  const allRouteNames = [];
   let queryIdx = 0;
 
   const [, ...elems] = components.map((Component, index) => {
@@ -33,8 +21,11 @@ export default function generateContainer(React, Relay, newProps) {
         `<Route component={${Component.displayName}} route={...}/>`
       );
 
+      const routeName = route.name;
+      allRouteNames.push(routeName);
+
       Object.keys(route.queries).forEach(queryName => {
-        const newQueryName = `Nested_${route.name}_${queryName}_${++queryIdx}`;
+        const newQueryName = `Nested_${routeName}_${queryName}_${++queryIdx}`;
         fragments[newQueryName] = queries[newQueryName] = (_, ...args) => {
           return route.queries[queryName](Component, ...args);
         };
@@ -57,13 +48,12 @@ export default function generateContainer(React, Relay, newProps) {
   });
 
   const route = {
-    name: routeName,
+    name: ['Nested', ...allRouteNames].join('_'),
     queries
   };
 
-  const state = CACHED_CONTAINERS[routeName] = {
+  return {
     Component: generateNestedRenderer(React, elems, fragments),
     route
   };
-  return state;
 }
