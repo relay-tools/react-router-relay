@@ -32,5 +32,4 @@ relay-nested-routes will automatically generate a component that includes all of
 
 # Todo
 
-* Passing react-router props to rendered components
 * Named react-router components
