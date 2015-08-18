@@ -18,7 +18,7 @@ export default function generateContainer(React, Relay, newProps) {
   }
 
   const queries = {};
-  const fragmentNames = [];
+  const fragments = {};
   let queryIdx = 0;
 
   const [, ...elems] = components.map((Component, index) => {
@@ -35,11 +35,9 @@ export default function generateContainer(React, Relay, newProps) {
 
       Object.keys(route.queries).forEach(queryName => {
         const newQueryName = `Nested_${route.name}_${queryName}_${++queryIdx}`;
-        queries[newQueryName] = (_, ...args) => {
+        fragments[newQueryName] = queries[newQueryName] = (_, ...args) => {
           return route.queries[queryName](Component, ...args);
         };
-
-        fragmentNames.push(newQueryName);
         fragmentResolvers.push({
           prop: queryName,
           resolve: function getLocalProp() {
@@ -64,7 +62,7 @@ export default function generateContainer(React, Relay, newProps) {
   };
 
   const state = CACHED_CONTAINERS[routeName] = {
-    Component: generateNestedRenderer(React, elems, fragmentNames),
+    Component: generateNestedRenderer(React, elems, fragments),
     route
   };
   return state;
