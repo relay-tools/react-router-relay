@@ -27,9 +27,16 @@ ReactDOM.render((
 ), document.getElementById('react-root'));
 ```
 
-Define root queries that contains just the queries that a particular `Relay.Container` needs and add it as a `queries` prop to any container `<Route/>`s.
+Define a Relay.Route (or just a object containing your queries) for a
+particular `Relay.Container` needs and add it as a `route` or `queries` prop to
+any container `<Route/>`s.
 
-`relay-nested-routes` will automatically generate a component that includes all of your fragments, and a route that includes all of your root queries, and dispatch/render everything in one go.
+`relay-nested-routes` will automatically generate a component that includes all
+of your fragments, and a route that includes all of your root queries,
+and dispatch/render everything in one go.
+
+You can pass props like `renderLoading` by adding them as props to the
+`NestedRootContainer` route.
 
 # Todo
 
