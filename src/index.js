@@ -1,16 +1,6 @@
 const invariant = require('invariant');
 const CACHED_STATES = {};
 
-// Super nasty way to rename the fragment until facebook/relay#20 is solved.
-function patchRouteQuery(oldQueryName, newQueryName, query) {
-  /* eslint-disable no-eval */
-  return eval(`(function(Relay) { return ${query.toString().replace(
-    /getFragment\((\S*?)\)/,
-    `getFragment(${JSON.stringify(newQueryName)})`
-  )}; })`);
-  /*eslint-enable no-eval */
-}
-
 function generateRouteName(components) {
   return `Nested_${
     components.map(component => component.displayName).join('_')
@@ -26,7 +16,7 @@ function generateContainer(React, Relay, newProps) {
   }
 
   const queries = {};
-  const fragments = {};
+  const fragmentNames = [];
   let queryIdx = 0;
 
   const [, ...elems] = components.map((Component, index) => {
@@ -41,14 +31,11 @@ function generateContainer(React, Relay, newProps) {
       );
 
       Object.keys(route.queries).forEach(queryName => {
-        const newQueryName = `Nested_${route.routeName}_${queryName}_${++queryIdx}`;
-        queries[newQueryName] = patchRouteQuery(
-          queryName,
-          newQueryName,
-          route.queries[queryName]
-        ).call(undefined, Relay);
-        const fragment = Component.getFragment(queryName)._fragmentGetter;
-        fragments[newQueryName] = () => fragment();
+        const newQueryName = `Nested_${route.name}_${queryName}_${++queryIdx}`;
+        queries[newQueryName] =
+          (_, ...args) => route.queries[queryName](Component, ...args);
+
+        fragmentNames.push(newQueryName);
         fragmentResolvers.push({
           prop: queryName,
           resolve: function getLocalProp() {
@@ -68,6 +55,14 @@ function generateContainer(React, Relay, newProps) {
   });
 
   class NestedRenderer extends React.Component {
+    static getFragmentNames() {
+      return fragmentNames;
+    }
+
+    // Hackishly satisfy isRelayContainer.
+    static getQuery() {}
+    static getQueryNames() {}
+
     render() {
       return elems.reduceRight((children, generateComponent) => {
         return generateComponent.call(this, { children: children });
@@ -75,17 +70,13 @@ function generateContainer(React, Relay, newProps) {
     }
   }
 
-  const NestedRendererContainer = Relay.createContainer(NestedRenderer, {
-    fragments
-  });
-
   const route = {
     name: routeName,
     queries
   };
 
   const state = CACHED_STATES[routeName] = {
-    Component: NestedRendererContainer,
+    Component: NestedRenderer,
     route
   };
   return state;
@@ -93,8 +84,8 @@ function generateContainer(React, Relay, newProps) {
 
 export default function generateRootContainer(React, Relay) {
   return class NestedRootContainer extends React.Component {
-    constructor(props) {
-      super(props);
+    constructor(props, context) {
+      super(props, context);
       this.state = generateContainer(React, Relay, props);
     }
 
