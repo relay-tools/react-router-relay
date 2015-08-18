@@ -32,8 +32,9 @@ function generateContainer(React, Relay, newProps) {
 
       Object.keys(route.queries).forEach(queryName => {
         const newQueryName = `Nested_${route.name}_${queryName}_${++queryIdx}`;
-        queries[newQueryName] =
-          (_, ...args) => route.queries[queryName](Component, ...args);
+        queries[newQueryName] = (_, ...args) => {
+          return route.queries[queryName](Component, ...args);
+        };
 
         fragmentNames.push(newQueryName);
         fragmentResolvers.push({
