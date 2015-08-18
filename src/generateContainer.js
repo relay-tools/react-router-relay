@@ -1,7 +1,7 @@
 import generateNestedRenderer from './NestedRenderer';
 
 const invariant = require('invariant');
-const CACHED_STATES = {};
+const CACHED_CONTAINERS = {};
 
 function generateRouteName(components) {
   return `Nested_${
@@ -13,8 +13,8 @@ export default function generateContainer(React, Relay, newProps) {
   const { branch, components } = newProps;
   const routeName = generateRouteName(components);
 
-  if (CACHED_STATES[routeName]) {
-    return CACHED_STATES[routeName];
+  if (CACHED_CONTAINERS[routeName]) {
+    return CACHED_CONTAINERS[routeName];
   }
 
   const queries = {};
@@ -62,7 +62,7 @@ export default function generateContainer(React, Relay, newProps) {
     queries
   };
 
-  const state = CACHED_STATES[routeName] = {
+  const state = CACHED_CONTAINERS[routeName] = {
     Component: generateNestedRenderer(React, elems, fragmentNames),
     route
   };
