@@ -107,6 +107,7 @@ export default function generateRootContainer(React, Relay) {
 
       return (
         <Relay.RootContainer
+          {...this.props}
           Component={Component}
           route={{ ...route, params: this.props.params }}/>
       );
