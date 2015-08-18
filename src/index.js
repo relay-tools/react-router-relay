@@ -7,6 +7,14 @@ function patchRouteQuery(oldQueryName, newQueryName, query) {
   )}; })`);
 }
 
+function generateRouteName(components) {
+  return `Nested_${
+    components.map(component => component.displayName).join('_')
+  }`;
+}
+
+const CACHED_STATES = {};
+
 export default function generateRootContainer(React, Relay) {
   return class NestedRootContainer extends React.Component {
     constructor(props) {
@@ -19,16 +27,22 @@ export default function generateRootContainer(React, Relay) {
     }
 
     render() {
-      const { Component, Route } = this.state;
+      const { Component, route } = this.state;
 
-      return (<Relay.RootContainer
-                Component={Component}
-                route={new Route(this.props.params)}
-              />);
+      return (
+        <Relay.RootContainer
+          Component={Component}
+          route={{ ...route, params: this.props.params }}/>
+      );
     }
 
     _generateContainer(newProps) {
       const { branch, components } = newProps;
+      const routeName = generateRouteName(components);
+
+      if (CACHED_STATES[routeName]) {
+        return CACHED_STATES[routeName];
+      }
 
       const queries = {};
       const fragments = {};
@@ -84,12 +98,16 @@ export default function generateRootContainer(React, Relay) {
         fragments,
       });
 
-      class NestedRoute extends Relay.Route {
-        static queries = queries;
-        static routeName = 'NestedRoute';
-      }
+      const route = {
+        name: routeName,
+        queries,
+      };
 
-      return { Component: NestedRendererContainer, Route: NestedRoute };
+      const state = CACHED_STATES[routeName] = {
+        Component: NestedRendererContainer,
+        route,
+      };
+      return state;
     }
-  }
+  };
 }

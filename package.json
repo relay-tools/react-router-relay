@@ -1,6 +1,6 @@
 {
   "name": "relay-nested-routes",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Nested react-router views for Relay",
   "main": "lib/index.js",
   "scripts": {

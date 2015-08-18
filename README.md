@@ -32,5 +32,5 @@ relay-nested-routes will automatically generate a component that includes all of
 
 # Todo
 
-* Caching routes and containers so that Relay caching works properly
 * Passing react-router props to rendered components
+* Named react-router components
