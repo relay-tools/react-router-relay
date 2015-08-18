@@ -41,3 +41,9 @@ You can also pass props like `renderLoading` by adding them as props to the
 # Todo
 
 * Named react-router components
+
+# Thanks
+
+[@cpojer](https://github.com/cpojer)
+
+[@taion](https://github.com/taion)
