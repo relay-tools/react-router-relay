@@ -1,69 +1,64 @@
-import generateNestedRenderer from './NestedRenderer';
-const invariant = require('invariant');
+import invariant from 'invariant';
 
-const CACHED_CONTAINERS = {};
+import generateNestedRenderer from './NestedRenderer';
+
+const CACHE = {};
 
 function generateRouteName(components) {
-  return `Nested_${
-    components.map(component => component.displayName).join('_')
-  }`;
+  return `$$_${components.map(component => component.displayName).join('_')}`;
 }
 
-export default function generateContainer(React, Relay, newProps) {
-  const { branch, components } = newProps;
-  const routeName = generateRouteName(components);
+export default function generateContainer(React, Relay, newProps){
+  const {branch, components} = newProps;
+  const name = generateRouteName(components);
 
-  if (CACHED_CONTAINERS[routeName]) {
-    return CACHED_CONTAINERS[routeName];
+  if (CACHE[name]) {
+    return CACHE[name];
   }
 
-  const queries = {};
+  const rootQueries = {};
   const fragments = {};
   let queryIdx = 0;
 
-  const [, ...elems] = components.map((Component, index) => {
+  const [, ...elements] = components.map((Component, index) => {
     const fragmentResolvers = [];
 
     if (Relay.isContainer(Component)) {
-      const { route } = branch[index];
+      const {queries, name: routeName} = branch[index];
       invariant(
-        route,
-        `relay-nested-routes: Route with component ` +
-        `\`${Component.displayName}\` is missing a route prop: ` +
-        `<Route component={${Component.displayName}} route={...}/>`
+        queries,
+        'relay-nested-routes: Route with component `%s` is missing a ' +
+        '`queries` prop: <Route component={%s} queries={...} />.',
+        Component.displayName,
+        Component.displayName
       );
 
-      Object.keys(route.queries).forEach(queryName => {
-        const newQueryName = `Nested_${route.name}_${queryName}_${++queryIdx}`;
-        fragments[newQueryName] = queries[newQueryName] = (_, ...args) => {
-          return route.queries[queryName](Component, ...args);
+      Object.keys(queries).forEach(queryName => {
+        const generatedName = `$$_${routeName}_${queryName}_${++queryIdx}`;
+        const resolve = function() {
+          return this.props[generatedName];
         };
-        fragmentResolvers.push({
-          prop: queryName,
-          resolve: function getLocalProp() {
-            return this.props[newQueryName];
-          }
-        });
+        fragments[generatedName] = rootQueries[generatedName] = (_, ...args) =>
+          queries[queryName](Component, ...args);
+        fragmentResolvers.push({queryName, resolve});
       });
     }
 
-    return function ComponentGenerator(props) {
-      fragmentResolvers.forEach(fragment => {
-        props[fragment.prop] = fragment.resolve.call(this);
-      });
-
-      return <Component {...props}/>;
+    return function ComponentRenderer(props) {
+      var clonedProps = {...props};
+      fragmentResolvers.forEach(
+        ({queryName, resolve}) => clonedProps[queryName] = resolve.call(this)
+      );
+      return <Component {...clonedProps} />;
     };
   });
 
-  const route = {
-    name: routeName,
-    queries
+  return CACHE[name] = {
+    Component: generateNestedRenderer(React, elements, fragments),
+    route: {
+      name,
+      params: newProps.params,
+      queries: rootQueries
+    }
   };
-
-  const state = CACHED_CONTAINERS[routeName] = {
-    Component: generateNestedRenderer(React, elems, fragments),
-    route
-  };
-  return state;
 }

@@ -18,17 +18,17 @@ var NestedRootContainer = require('relay-nested-routes')(React, Relay);
 ReactDOM.render((
   <Router history={new BrowserHistory()}>
     <Route component={NestedRootContainer}>
-      <Route component={App} route={AppRoute}>
-        <Route path="/" component={Dashboard} route={DashboardRoute}/>
+      <Route component={App} queries={AppQueries}>
+        <Route path="/" component={Dashboard} queries={DashboardQueries}/>
       </Route>
     </Route>
   </Router>
 ), document.getElementById('react-root'));
 ```
 
-Define a `Relay.Route` that contains just the data that a particular `Relay.Container` needs and add it as a `route` prop to any container `<Route/>`s.
+Define root queries that contains just the queries that a particular `Relay.Container` needs and add it as a `queries` prop to any container `<Route/>`s.
 
-relay-nested-routes will automatically generate a component that includes all of your fragments, and a route that includes all of your root queries, and dispatch/render everything in one go.
+`relay-nested-routes` will automatically generate a component that includes all of your fragments, and a route that includes all of your root queries, and dispatch/render everything in one go.
 
 # Todo
 

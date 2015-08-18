@@ -12,13 +12,13 @@ export default function generateRootContainer(React, Relay) {
     }
 
     render() {
-      const { Component, route } = this.state;
-
+      const {Component, route} = this.state;
       return (
         <Relay.RootContainer
           {...this.props}
           Component={Component}
-          route={{ ...route, params: this.props.params }}/>
+          route={route}
+        />
       );
     }
   };

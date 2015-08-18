@@ -15,9 +15,10 @@ export default function generateNestedRenderer(React, components, fragments) {
     static getQueryNames() {}
 
     render() {
-      return components.reduceRight((children, generateComponent) => {
-        return generateComponent.call(this, { children: children });
-      }, null);
+      return components.reduceRight(
+        (children, generate) => generate.call(this, {children}),
+        null
+      );
     }
   };
 }
