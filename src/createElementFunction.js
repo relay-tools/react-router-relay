@@ -5,9 +5,8 @@ import * as Utils from './containerUtils';
 import QueryAggregator from './QueryAggregator';
 import getRouteParams from './getRouteParams';
 import RouteGenerator from './RouteGenerator';
-import getRelayRootProps from './getRelayRootProps';
 
-export default function generateElementCreator() {
+export function createElementFunction() {
   const queryAggregator = new QueryAggregator();
   const routeGenerator = new RouteGenerator();
 
@@ -19,8 +18,8 @@ export default function generateElementCreator() {
       Utils.createContainerElement(
         Component,
         props,
-        getRouteParams(routeParams, location.query, route.queryParams),
-        getRelayRootProps(route),
+        getRouteParams(routeParams, location.query, route.queryParams || []),
+        route.rootContainerProps || {},
         routeGenerator.getRouteFor(branch),
         queryAggregator
       );
@@ -29,8 +28,8 @@ export default function generateElementCreator() {
     element = route !== branch[0] ? element :
       Utils.createBatchedRelayContainer(
         element,
-        getRouteParams(params, location.query, route.queryParams),
-        getRelayRootProps(route),
+        getRouteParams(params, location.query, route.queryParams || []),
+        route.rootContainerProps || {},
         routeGenerator.getRouteFor(branch),
         queryAggregator
       );

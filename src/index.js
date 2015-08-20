@@ -1,2 +1,2 @@
-import generateElementCreator from './generateElementCreator';
-export default generateElementCreator;
+import {createElementFunction} from './createElementFunction';
+export {createElementFunction};

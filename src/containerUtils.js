@@ -2,26 +2,28 @@ import invariant from 'invariant';
 import React from 'react';
 import Relay from 'react-relay';
 
-import batchedRelayContainerBase from './BatchedRelayContainerBase';
+import batchedRelayContainerBase from './batchedRelayContainerBase';
 
 export function createBatchedRelayContainer(
-    childElement,
+    children,
     params,
-    rootProps,
-    routeName,
+    rootContainerProps,
+    name,
     queryAggregator
 ) {
   const {queries, fragments} = queryAggregator.flush();
   const BatchedRelayContainer = {fragments, ...batchedRelayContainerBase};
-  const route = {name: routeName, queries, params};
-  const {renderFetched = (data, Component, children) => children} = rootProps;
+  const route = {name, queries, params};
+  const {
+    renderFetched = (data, Component, children) => children
+  } = rootContainerProps;
 
   return (
     <Relay.RootContainer
       Component={BatchedRelayContainer}
       route={route}
-      {...rootProps}
-      renderFetched={data => renderFetched(data, null, childElement)}
+      {...rootContainerProps}
+      renderFetched={data => renderFetched(data, null, children)}
     />
   );
 }
@@ -30,8 +32,8 @@ export function createContainerElement(
   Component,
   props,
   params,
-  rootProps,
-  routeName,
+  rootContainerProps,
+  name,
   queryAggregator
 ) {
   const {queries} = props.route;
@@ -41,19 +43,19 @@ export function createContainerElement(
     '`queries` prop.'
   );
 
-  const route = {name: routeName, queries, params};
+  const route = {name, queries, params};
   queryAggregator.add(Component, queries);
   const {
     renderFetched = (data, Component, children) => (
       <Component {...props} {...data} />
     )
-  } = rootProps;
+  } = rootContainerProps;
 
   return (
     <Relay.RootContainer
       Component={Component}
       route={route}
-      {...rootProps}
+      {...rootContainerProps}
       renderFetched={data => renderFetched(data, Component, null)}
     />
   );

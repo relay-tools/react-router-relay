@@ -3,12 +3,9 @@ export default function getRouteParams(
   queryParams,
   allowedQueryParams
 ) {
-  const filteredQueryParams = {...queryParams};
-  const allowedQueryParamSet = new Set(allowedQueryParams);
-  Object.keys(filteredQueryParams).forEach(paramName => {
-    if (!allowedQueryParamSet.has(paramName)) {
-      delete filteredQueryParams[paramName];
-    }
+  const filteredQueryParams = {};
+  allowedQueryParams.forEach(paramKey => {
+    filteredQueryParams[paramKey] = queryParams[paramKey];
   });
   return {...filteredQueryParams, ...routeParams};
 }

@@ -11,12 +11,12 @@ react-router@>=1.0.0-beta3 routes like so:
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Relay from 'react-relay';
-import reactRouterRelay from 'react-router-relay';
+import * as ReactRouterRelay from 'react-router-relay';
 
 /* ... */
 
 ReactDOM.render((
-  <Router history={new BrowserHistory()} createElement={reactRouterRelay()}>
+  <Router history={new BrowserHistory()} createElement={ReactRouterRelay.createElementFunction()}>
     <Route component={App} queries={AppQueries}>
       <Route path="/" component={Dashboard} queries={DashboardQueries}/>
     </Route>
@@ -41,8 +41,21 @@ var AppQueries = {
 of your fragments, and a route that includes all of your root queries,
 and dispatch/render everything in one go.
 
-You can also pass props like `renderLoading` by adding them as props to
-your routes.
+You can also pass props like `renderLoading` by adding them to a
+`rootContainerProps` prop on your routes.
+
+You can specify an array of query parameters as a `queryParams` prop to specify
+which parameters should be passed in from the router and made available as
+variables to your root queries and containers:
+
+```js
+<Route
+  path='/widgets'
+  component={Widgets}
+  queries={WidgetsQueries}
+  queryParams={['date', 'color']} // date and color will be passed as variables
+/>`
+```
 
 # Special Thanks
 

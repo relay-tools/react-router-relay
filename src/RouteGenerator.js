@@ -1,5 +1,3 @@
-import * as Immutable from 'immutable';
-
 export default class RouteGenerator {
   constructor() {
     this._routeIdx = 0;
