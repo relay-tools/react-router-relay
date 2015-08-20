@@ -13,25 +13,16 @@ export function createBatchedRelayContainer(
   const {queries, fragments} = queryAggregator.flush();
   const BatchedRelayContainer = {fragments, ...batchedRelayContainerBase};
   const route = {name, queries, params};
+  const render = () => children;
 
-  /*
-    This is a hack that lets us batch up all of the queries from our
-    query aggregator, while still allowing individual Relay.RootContainers
-    to function properly (with e.g. renderLoading).
-
-    If we rendered `children` inside of the aggregated RootContainer,
-    then changing routes would disturb the entire page, rather than
-    just being localized to any changing parts.
-  */
   return (
-    <div>
-      <Relay.RootContainer
-        Component={BatchedRelayContainer}
-        route={route}
-        renderFetched={() => null}
-      />
-      {children}
-    </div>
+    <Relay.RootContainer
+      Component={BatchedRelayContainer}
+      route={route}
+      renderFailure={render}
+      renderLoading={render}
+      renderFetched={render}
+    />
   );
 }
 
@@ -52,11 +43,9 @@ export function createContainerElement(
 
   const route = {name, queries, params};
   queryAggregator.add(Component, queries);
-  const {
-    renderFetched = (data, props) => (
-      <Component {...props} {...data} />
-    )
-  } = rootContainerProps;
+
+  const renderFetched = rootContainerProps.renderFetched
+    || ((data, props) => <Component {...props} {...data} />);
 
   return (
     <Relay.RootContainer

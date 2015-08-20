@@ -22,7 +22,7 @@ export default class QueryAggregator {
   flush() {
     const config = {
       queries: this._queries,
-      fragments: this._fragments
+      fragments: this._fragments,
     };
 
     this._reset();
