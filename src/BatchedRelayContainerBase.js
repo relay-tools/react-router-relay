@@ -1,23 +1,15 @@
-import React from 'react';
-
-export default class BatchedRelayContainerBase extends React.Component {
-  static getFragmentNames() {
+export default {
+  getFragmentNames: function getFragmentNames() {
     if (!this._fragmentNames) {
       this._fragmentNames = Object.keys(this.fragments);
     }
     return this._fragmentNames;
-  }
-
-  static getFragment(name, ...args) {
+  },
+  getFragment: function getFragment(name, ...args) {
     return this.fragments[name](...args);
-  }
-
+  },
   // TODO: Remove when Relay>0.1.1 is released (facebook/relay#103),
-  // since getFragmentNames and getFragment fullfill the isContainer contract
-  static getQuery() {}
-  static getQueryNames() {}
-
-  render() {
-    return this.constructor.childElement;
-  }
-}
+  // since getFragmentNames and getFragment fulfill the isContainer contract
+  getQuery: function getQuery() {},
+  getQueryNames: function getQueryNames() {}
+};

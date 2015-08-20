@@ -2,12 +2,13 @@ import React from 'react';
 import Relay from 'react-relay';
 
 import * as Utils from './containerUtils';
-import QueryBatcher from './QueryBatcher';
-import defaultGetParams from './defaultGetParams';
+import QueryAggregator from './QueryAggregator';
+import getRouteParams from './getRouteParams';
 import RouteGenerator from './RouteGenerator';
+import getRelayRootProps from './getRelayRootProps';
 
-export default function generateElementCreator(getParams = defaultGetParams) {
-  const queryBatcher = new QueryBatcher();
+export default function generateElementCreator() {
+  const queryAggregator = new QueryAggregator();
   const routeGenerator = new RouteGenerator();
 
   return function createElement(Component, props) {
@@ -18,18 +19,20 @@ export default function generateElementCreator(getParams = defaultGetParams) {
       Utils.createContainerElement(
         Component,
         props,
-        getParams(routeParams, location.query),
+        getRouteParams(routeParams, location.query, route.queryParams),
+        getRelayRootProps(route),
         routeGenerator.getRouteFor(branch),
-        queryBatcher
+        queryAggregator
       );
 
     // Wrap the root component in a RootContainer
     element = route !== branch[0] ? element :
       Utils.createBatchedRelayContainer(
         element,
-        getParams(params, location.query),
+        getRouteParams(params, location.query, route.queryParams),
+        getRelayRootProps(route),
         routeGenerator.getRouteFor(branch),
-        queryBatcher
+        queryAggregator
       );
 
     return element;

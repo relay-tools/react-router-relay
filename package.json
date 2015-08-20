@@ -38,11 +38,11 @@
     "webpack-dev-server": "^1.8.2"
   },
   "dependencies": {
-    "invariant": "^2.1.0",
-    "warning": "^2.0.0"
+    "invariant": "^2.1.0"
   },
   "peerDependencies": {
     "react": "*",
-    "react-relay": "*"
+    "react-relay": "*",
+    "react-router": "*"
   }
 }

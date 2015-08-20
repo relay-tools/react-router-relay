@@ -2,26 +2,26 @@ import invariant from 'invariant';
 import React from 'react';
 import Relay from 'react-relay';
 
-import BatchedRelayContainerBase from './BatchedRelayContainerBase';
+import batchedRelayContainerBase from './BatchedRelayContainerBase';
 
 export function createBatchedRelayContainer(
     childElement,
     params,
+    rootProps,
     routeName,
-    queryBatcher
+    queryAggregator
 ) {
-  const {queries, fragments} = queryBatcher.flush();
+  const {queries, fragments} = queryAggregator.flush();
+  const BatchedRelayContainer = {fragments, ...batchedRelayContainerBase};
   const route = {name: routeName, queries, params};
-
-  class BatchedRelayContainer extends BatchedRelayContainerBase {
-    static childElement = childElement;
-    static fragments = fragments;
-  }
+  const {renderFetched = (data, Component, children) => children} = rootProps;
 
   return (
     <Relay.RootContainer
       Component={BatchedRelayContainer}
       route={route}
+      {...rootProps}
+      renderFetched={data => renderFetched(data, null, childElement)}
     />
   );
 }
@@ -30,25 +30,31 @@ export function createContainerElement(
   Component,
   props,
   params,
+  rootProps,
   routeName,
-  queryBatcher
+  queryAggregator
 ) {
   const {queries} = props.route;
   invariant(
     queries,
-    'relay-nested-routes: Component is missing queries prop!'
+    'react-router-relay: Route with component `%s` is missing required ' +
+    '`queries` prop.'
   );
 
   const route = {name: routeName, queries, params};
-  queryBatcher.add(Component, queries);
+  queryAggregator.add(Component, queries);
+  const {
+    renderFetched = (data, Component, children) => (
+      <Component {...props} {...data} />
+    )
+  } = rootProps;
 
   return (
     <Relay.RootContainer
       Component={Component}
       route={route}
-      renderFetched={data => (
-        <Component {...props} {...data} />
-      )}
+      {...rootProps}
+      renderFetched={data => renderFetched(data, Component, null)}
     />
   );
 }

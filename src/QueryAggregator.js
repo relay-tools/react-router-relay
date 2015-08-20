@@ -1,4 +1,4 @@
-export default class QueryBatcher {
+export default class QueryAggregator {
   constructor() {
     this._reset();
   }
