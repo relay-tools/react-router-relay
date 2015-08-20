@@ -16,7 +16,10 @@ import * as ReactRouterRelay from 'react-router-relay';
 /* ... */
 
 ReactDOM.render((
-  <Router history={new BrowserHistory()} createElement={ReactRouterRelay.createElementFunction()}>
+  <Router
+      history={new BrowserHistory()}
+      createElement={ReactRouterRelay.createElementFunction()}
+  >
     <Route component={App} queries={AppQueries}>
       <Route path="/" component={Dashboard} queries={DashboardQueries}/>
     </Route>
