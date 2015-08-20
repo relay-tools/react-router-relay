@@ -1,7 +1,7 @@
 {
-  "name": "relay-nested-routes",
-  "version": "0.3.1",
-  "description": "Nested react-router views for Relay",
+  "name": "react-router-relay",
+  "version": "0.4.0",
+  "description": "Nested react-router routes for Relay",
   "main": "lib/index.js",
   "scripts": {
     "clean": "rimraf lib dist",
@@ -38,7 +38,12 @@
     "webpack-dev-server": "^1.8.2"
   },
   "dependencies": {
+    "immutable": "^3.7.4",
     "invariant": "^2.1.0",
     "warning": "^2.0.0"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-relay": "*"
   }
 }

@@ -1,8 +1,8 @@
-relay-nested-routes
+react-router-relay
 =========================
-Nested react-router views for Relay
+Nested react-router routes for Relay
 
-    $ npm install --save relay-nested-routes
+    $ npm install --save react-router-relay
 
 After you've installed it, add it as a root `<Route>` to your
 react-router@>=1.0.0-beta3 routes like so:
@@ -11,38 +11,40 @@ react-router@>=1.0.0-beta3 routes like so:
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Relay from 'react-relay';
-
-import RelayNestedRoutes from 'relay-nested-routes';
-var NestedRootContainer = RelayNestedRoutes(React, Relay);
+import reactRouterRelay from 'react-router-relay';
 
 /* ... */
 
 ReactDOM.render((
-  <Router history={new BrowserHistory()}>
-    <Route component={NestedRootContainer}>
-      <Route component={App} queries={AppQueries}>
-        <Route path="/" component={Dashboard} queries={DashboardQueries}/>
-      </Route>
+  <Router history={new BrowserHistory()} createElement={reactRouterRelay()}>
+    <Route component={App} queries={AppQueries}>
+      <Route path="/" component={Dashboard} queries={DashboardQueries}/>
     </Route>
   </Router>
 ), document.getElementById('react-root'));
 ```
 
 Define an object containing your queries that a particular `Relay.Container`
-needs and add it as a `queries` prop to any container `<Route/>`s.
+needs and add it as a `queries` prop to any container `<Route/>`s:
 
-`relay-nested-routes` will automatically generate a component that includes all
+```js
+var AppQueries = {
+  viewer: (Component) => Relay.QL`
+    viewer {
+      ${Component.getFragment('viewer')}
+    }
+  `
+};
+```
+
+`react-router-relay` will automatically generate a component that includes all
 of your fragments, and a route that includes all of your root queries,
 and dispatch/render everything in one go.
 
-You can also pass props like `renderLoading` by adding them as props to the
-`NestedRootContainer` route.
+You can also pass props like `renderLoading` by adding them as props to
+your routes.
 
-# Todo
-
-* Named react-router components
-
-# Thanks
+# Special Thanks
 
 [@cpojer](https://github.com/cpojer)
 
