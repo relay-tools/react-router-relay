@@ -38,7 +38,6 @@
     "webpack-dev-server": "^1.8.2"
   },
   "dependencies": {
-    "immutable": "^3.7.4",
     "invariant": "^2.1.0",
     "warning": "^2.0.0"
   },
