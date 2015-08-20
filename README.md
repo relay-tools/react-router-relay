@@ -11,7 +11,7 @@ Afterwards, add it as the `createElement` of your react-router@>=1.0.0-beta3
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Relay from 'react-relay';
-import * as ReactRouterRelay from 'react-router-relay';
+import ReactRouterRelay from 'react-router-relay';
 
 /* ... */
 
@@ -59,10 +59,22 @@ var customContainerProps = {
 <Route {/* ... */} rootContainerProps={customContainerProps} />
 ```
 
+**Note:** The signature for `renderFetched` when using `rootContainerProps` is:
+
+```js
+function FetchedRendered(
+  data: any,
+  routeProps: {[key: string]: string}
+): any;
+```
+
+`routeProps` is appended at the end so that you can pass properties from
+react-router on to your rendered components.
+
 # Query Parameters
 
-You can specify an array of query parameters as a `queryParams` prop to specify
-which parameters should be passed in from the router and made available as
+You can pass an array to the `queryParams` prop to specify which query
+parameters should be passed in from the router and made available as
 variables to your root queries and containers:
 
 ```js

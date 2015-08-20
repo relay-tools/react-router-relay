@@ -29,7 +29,6 @@ export function createElementFunction() {
       Utils.createBatchedRelayContainer(
         element,
         getRouteParams(params, location.query, route.queryParams || []),
-        route.rootContainerProps || {},
         routeGenerator.getRouteFor(branch),
         queryAggregator
       );

@@ -1,2 +1,2 @@
 import {createElementFunction} from './createElementFunction';
-export {createElementFunction};
+export default {createElementFunction};
