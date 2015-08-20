@@ -4,8 +4,8 @@ Nested react-router routes for Relay
 
     $ npm install --save react-router-relay
 
-After you've installed it, add it as a root `<Route>` to your
-react-router@>=1.0.0-beta3 routes like so:
+Afterwards, add it as the `createElement` of your react-router@>=1.0.0-beta3
+`<Router>` like so:
 
 ```js
 import React from 'react';
@@ -41,8 +41,22 @@ var AppQueries = {
 of your fragments, and a route that includes all of your root queries,
 and dispatch/render everything in one go.
 
-You can also pass props like `renderLoading` by adding them to a
-`rootContainerProps` prop on your routes.
+# RootContainer Props
+
+You can pass props like `renderLoading` by adding them to a
+`rootContainerProps` prop on your routes:
+
+```js
+var customContainerProps = {
+  renderLoading: () => <Loading />; // Render a Loading component
+};
+
+/* ... */
+
+<Route {/* ... */} rootContainerProps={customContainerProps} />
+```
+
+# Query Parameters
 
 You can specify an array of query parameters as a `queryParams` prop to specify
 which parameters should be passed in from the router and made available as
