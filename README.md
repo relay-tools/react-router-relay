@@ -11,6 +11,7 @@ react-router@>=1.0.0-beta3 routes like so:
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Relay from 'react-relay';
+import { Router, Route } from 'react-router';
 
 import RelayNestedRoutes from 'relay-nested-routes';
 var NestedRootContainer = RelayNestedRoutes(React, Relay);
