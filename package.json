@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/relay-tools/react-router-relay",
   "dependencies": {
+    "babel-runtime": "^5.8.20",
     "invariant": "^2.1.0",
     "react-static-container": "^1.0.0-alpha.1"
   },
