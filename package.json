@@ -1,12 +1,17 @@
 {
-  "name": "relay-nested-routes",
-  "version": "0.3.1",
-  "description": "Nested react-router views for Relay",
+  "name": "react-router-relay",
+  "version": "0.4.0",
+  "description": "Nested react-router routes for Relay",
+  "files": [
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
   "main": "lib/index.js",
   "scripts": {
-    "clean": "rimraf lib dist",
+    "clean": "rimraf lib",
     "build": "babel src --out-dir lib",
-    "lint": "eslint src test examples",
+    "lint": "eslint src",
     "prepublish": "npm run clean && npm run build"
   },
   "repository": {
@@ -27,18 +32,16 @@
   "homepage": "https://github.com/devknoll/relay-nested-routes",
   "devDependencies": {
     "babel": "^5.5.8",
-    "babel-core": "^5.6.18",
-    "babel-eslint": "^3.1.15",
-    "babel-loader": "^5.1.4",
-    "eslint": "^0.23",
-    "eslint-config-airbnb": "0.0.6",
-    "eslint-plugin-react": "^2.3.0",
-    "rimraf": "^2.3.4",
-    "webpack": "^1.9.6",
-    "webpack-dev-server": "^1.8.2"
+    "babel-eslint": "^4.0.10",
+    "eslint": "^1.2",
+    "eslint-config-airbnb": "0.0.8",
+    "eslint-plugin-react": "^3.2.3",
+    "react": "^0.14.0-beta3",
+    "react-router": "^1.0.0-beta3",
+    "rimraf": "^2.3.4"
   },
   "dependencies": {
     "invariant": "^2.1.0",
-    "warning": "^2.0.0"
+    "react-static-container": "^1.0.0-alpha.1"
   }
 }
