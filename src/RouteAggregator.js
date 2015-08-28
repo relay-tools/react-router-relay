@@ -126,9 +126,4 @@ export default class RouteAggregator {
     const {component, queryName} = this._fragmentSpecs[fragmentName];
     return component.getFragment(queryName, variableMapping);
   }
-
-  // TODO: Remove when Relay>0.1.1 is released (facebook/relay#103), since
-  // getFragmentNames and getFragment fulfill the isContainer contract.
-  getQuery() {}
-  getQueryNames() {}
 }
