@@ -10,7 +10,6 @@ export default class Container extends React.Component {
 
   static propTypes = {
     Component: React.PropTypes.func.isRequired,
-    routerProps: React.PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -23,7 +22,7 @@ export default class Container extends React.Component {
       return <RootComponent {...this.props} />;
     }
 
-    const {Component, routerProps} = this.props;
+    const {Component, ...routerProps} = this.props;
     const {route} = routerProps;
 
     // FIXME: Remove once fix for facebook/react#4218 is released.
