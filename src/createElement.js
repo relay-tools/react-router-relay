@@ -6,7 +6,7 @@ export default function createElement(Component, props) {
   return (
     <Container
       Component={Component}
-      routerProps={props}
+      {...props}
     />
   );
 }
