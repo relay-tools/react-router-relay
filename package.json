@@ -37,7 +37,7 @@
   "peerDependencies": {
     "react": "^0.14.0-beta3",
     "react-relay": "^0.2.0",
-    "react-router": "1.0.0-beta3"
+    "react-router": "^1.0.0-beta4"
   },
   "devDependencies": {
     "babel": "^5.8.23",
@@ -47,7 +47,7 @@
     "eslint-plugin-react": "^3.3.0",
     "react": "^0.14.0-beta3",
     "react-relay": "^0.2.0",
-    "react-router": "1.0.0-beta3",
+    "react-router": "^1.0.0-beta4",
     "rimraf": "^2.4.3"
   }
 }
