@@ -25,12 +25,6 @@ export default class Container extends React.Component {
     const {Component, ...routerProps} = this.props;
     const {route} = routerProps;
 
-    // FIXME: Remove once fix for facebook/react#4218 is released.
-    const {children} = routerProps;
-    if (children) {
-      routerProps.children = React.cloneElement(children, {});
-    }
-
     const {queries} = route;
     if (!queries) {
       return <Component {...routerProps} />;

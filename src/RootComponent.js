@@ -25,10 +25,6 @@ export default class RootComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.isTransitioning) {
-      return;
-    }
-
     this._routeAggregator.updateRoute(nextProps);
   }
 
