@@ -10,7 +10,6 @@ Afterwards, add it as the `createElement` of your react-router@>=1.0.0-beta3
 ```js
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Relay from 'react-relay';
 
 import { Router, Route } from 'react-router';
 import BrowserHistory from 'react-router/lib/BrowserHistory';
