@@ -33,8 +33,12 @@ ReactDOM.render((
 ), document.getElementById('react-root'));
 ```
 
-Define an object containing your queries that a particular `Relay.Container`
-needs and add it as a `queries` prop to any container `<Route/>`s:
+`react-router-relay` will automatically generate a component that includes all of your fragments, and a route that includes all of your root queries,
+and dispatch/render everything in one go.
+
+# Queries
+
+`react-router`’s `Route` already has a name and params: this means that all we need to constuct a full `Relay.Route` is `queries` property, which we pass on to `Route` as a prop:
 
 ```js
 var AppQueries = {
@@ -46,9 +50,9 @@ var AppQueries = {
 };
 ```
 
-`react-router-relay` will automatically generate a component that includes all
-of your fragments, and a route that includes all of your root queries,
-and dispatch/render everything in one go.
+```js
+<Route path="/" component={App} queries={AppQueries} />
+```
 
 # Render Callbacks
 
@@ -77,7 +81,62 @@ variables to your root queries and containers:
   component={Widgets}
   queries={WidgetsQueries}
   queryParams={['date', 'color']} // date and color will be passed as variables
-/>`
+/>
+```
+
+If you’re passing on params from path components, like a URL containing slugs, make sure to prefix your params with a colon:
+
+```js
+<Route
+  path='/:username/widgets'
+  component={Widgets}
+  queries={WidgetsQueries}
+  queryParams={[':username', 'date', 'color']} // :username, date and color will be passed as variables
+/>
+```
+
+## Passing parameters down to fragments
+
+It’s often the case that you’ll want your Component’s query fragments to have access to `react-router`’s params, especially if you’re using a query construction using `viewer`.
+
+```js
+<Route
+  path='/widgets'
+  component={WidgetsList}
+  queries={ViewerQueries}
+  queryparams={['color']}
+/>
+```
+
+Route will now pass the `color` variable down to `ViewerQueries`:
+
+```js
+const ViewerQueries = {
+  viewer: (Component, {color}) => Relay.QL`
+    query {
+      viewer {
+        ${Component.getFragment('widgets', {color})}
+      }
+    }
+  `
+}
+```
+
+And ViewerQueries will use the second argument of `getFragment` to pass down `color` to our query fragment for `WidgetsList`:
+
+```js
+Relay.createContainer(WidgetsList, {
+  initialVariables: {
+    color: null
+  },
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        widgets(color: $color)
+      }
+    `
+  }
+})
 ```
 
 # Special Thanks
