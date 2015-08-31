@@ -1,87 +1,159 @@
-react-router-relay
-=========================
-Nested react-router routes for Relay
+# react-router-relay
+[Relay](http://facebook.github.io/relay/) integration for [React Router](http://rackt.github.io/react-router/).
 
-    $ npm install --save react-router-relay
+[![npm version](https://badge.fury.io/js/react-router-relay.svg)](http://badge.fury.io/js/react-router-relay)
 
-Afterwards, add it as the `createElement` of your react-router@>=1.0.0-beta3
-`<Router>` like so:
+## Usage
+
+Use `ReactRouterRelay.createElement` on your `<Router>`, then define Relay queries and render callbacks for each of your routes:
 
 ```js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Relay from 'react-relay';
-
-import { Router, Route } from 'react-router';
-import BrowserHistory from 'react-router/lib/BrowserHistory';
 import ReactRouterRelay from 'react-router-relay';
 
 /* ... */
 
-ReactDOM.render((
-  <Router
-    history={new BrowserHistory()}
-    createElement={ReactRouterRelay.createElement}
-  >
-    <Route component={App} queries={AppQueries}>
-      <Route path="/" component={Dashboard} queries={DashboardQueries} />
-      {/* URL params from react-router are passed directly to your query.      */}
-      {/* Query params are available too, but must be whitelisted (see below). */}
-      <Route path="/widget/:widgetID" component={Widget} queries={WidgetQueries} />
-    </Route>
-  </Router>
-), document.getElementById('react-root'));
-```
-
-Define an object containing your queries that a particular `Relay.Container`
-needs and add it as a `queries` prop to any container `<Route/>`s:
-
-```js
-var AppQueries = {
-  viewer: (Component) => Relay.QL`
+const ApplicationQueries = {
+  viewer: Component => Relay.QL`
     viewer {
       ${Component.getFragment('viewer')}
     }
   `
 };
+
+ReactDOM.render((
+  <Router history={history} createElement={ReactRouterRelay.createElement}>
+    <Route
+      path="/" component={Application}
+      queries={ApplicationQueries}
+    >
+      <Route
+        path="widgets" component={WidgetList}
+        queries={WidgetListQueries} queryParams={['color']}
+        renderLoading={() => <Loading />}
+      />
+      <Route
+        path="widgets/:widgetId" component={Widget}
+        queries={WidgetQueries}
+      />
+    </Route>
+  </Router>
+), container);
 ```
 
-`react-router-relay` will automatically generate a component that includes all
-of your fragments, and a route that includes all of your root queries,
-and dispatch/render everything in one go.
+`react-router-relay` will automatically generate a combined Relay route with all queries and parameters from the active React Router routes, then pass down the query results to each of the route components. As the queries are all gathered onto a single route, they'll all be fetched at the same time, and the data for your entire page will load and then render in one go.
 
-# Render Callbacks
+## Guide
 
-You can pass in custom `renderLoading`, `renderFetched`, and `renderFailure`
-callbacks to your routes:
+### Installation
+
+The Relay technical preview requires React 14, which limits compatibility to the `1.0.0-beta` releases of React Router. Currently, `react-router-relay` supports the `1.0.0-beta3` release of React Router:
+
+```shell
+$ npm install react@next react-dom@next react-relay react-router@1.0.0-beta3
+$ npm install react-router-relay
+```
+
+### Routes and Queries
+
+For each of your routes that requires data from Relay, define a `queries` prop on the `<Route>`. These should be just like the queries on a Relay route:
+
+```js
+const ApplicationQueries = {
+  viewer: Component => Relay.QL`
+    viewer {
+      ${Component.getFragment('viewer')}
+    }
+  `
+};
+
+const applicationRoute = (
+  <Route
+    path="/" component={Application}
+    queries={ApplicationQueries}
+  />
+);
+```
+
+Just like with `Relay.RootContainer`, the component will receive the query results as props, in addition to the other injected props from React Router.
+
+If your route doesn't have any dependencies on Relay data, just don't declare `queries`. The only requirement is that any route that does define `queries` must have a Relay container as its component.
+
+Any URL parameters for the route and its ancestors will be passed as input parameters to the route's queries. The queries can then pass those parameters to the container as variables:
+
+```js
+class Widget extends React.Component { /* ... */ }
+
+Widget = Relay.createContainer(Widget, {
+  initialVariables: {
+    widgetId: null
+  },
+  
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on User {
+        widget(widgetId: $widgetId) {
+          name
+        }
+      }
+    `
+  }
+});
+
+const WidgetQueries = {
+  viewer: (Component, {widgetId}) => Relay.QL`
+    viewer {
+      ${Component.getFragment('viewer', {widgetId})}
+    }
+  `
+};
+
+// This handles e.g. /widgets/3.
+const widgetRoute = (
+  <Route
+    path="widgets/:widgetId" component={Widget}
+    queries={WidgetQueries}
+  />
+);
+```
+
+If your route has query parameters, just specify them on the `queryParams` prop on the `<Route>`, and they'll be passed to the queries as well:
+
+```js
+const WidgetListQueries = {
+  viewer: (Component, {color}) => Relay.QL`
+    viewer {
+      ${Component.getFragment('viewer', {color})}
+    }
+  `
+};
+
+// This handles e.g. /widgets?color=blue.
+const widgetListRoute = (
+  <Route
+    path="widgets" component={WidgetList}
+    queries={WidgetListQueries} queryParams={['color']}
+  />
+);
+```
+
+All URL and query parameters will be passed to the container as strings. If you need to convert them into something else, you can do so in `prepareVariables` on the container.
+
+### Render Callbacks
+
+You can pass in custom `renderLoading`, `renderFetched`, and `renderFailure` callbacks to your routes:
 
 ```js
 <Route {/* ... */} renderLoading={() => <Loading />} />
 ```
 
-These have the same signature and behavior as they do on `Relay.RootContainer`,
-except that the argument to `renderFetched` also includes the injected props
-from React Router. As on `Relay.RootContainer`, the `renderLoading` callback
-can simulate the default behavior of rendering the previous view by returning
-`undefined`.
+These have the same signature and behavior as they do on `Relay.RootContainer`, except that the argument to `renderFetched` also includes the injected props from React Router. As on `Relay.RootContainer`, the `renderLoading` callback can simulate the default behavior of rendering the previous view by returning `undefined`.
 
-# Query Parameters
+### Caveats
 
-You can pass an array to the `queryParams` prop to whitelist which query
-parameters should be passed in from the router and made available as
-variables to your root queries and containers:
+- Relay containers attempt to avoid re-rendering except when necessary. However, they can only do so when all props not through Relay are of scalar types. As the props injected by Relay Router into route components are not of static types, this optimization does not work there. As such, when using React Router with Relay, you should attempt to make the `render` method on any route components as lightweight as possible, and leave the real rendering work to child components that only receive scalar non-Relay props.
 
-```js
-<Route
-  path='/widgets'
-  component={Widgets}
-  queries={WidgetsQueries}
-  queryParams={['date', 'color']} // date and color will be passed as variables
-/>`
-```
+## Authors
 
-# Special Thanks
-
-[@cpojer](https://github.com/cpojer)
-
-[@taion](https://github.com/taion)
+- [@devknoll](https://github.com/devknoll)
+- [@cpojer](https://github.com/cpojer)
+- [@taion](https://github.com/taion)
