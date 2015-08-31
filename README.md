@@ -11,7 +11,9 @@ Afterwards, add it as the `createElement` of your react-router@>=1.0.0-beta3
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Relay from 'react-relay';
+
 import { Router, Route } from 'react-router';
+import BrowserHistory from 'react-router/lib/BrowserHistory';
 import ReactRouterRelay from 'react-router-relay';
 
 /* ... */
@@ -22,7 +24,10 @@ ReactDOM.render((
     createElement={ReactRouterRelay.createElement}
   >
     <Route component={App} queries={AppQueries}>
-      <Route path="/" component={Dashboard} queries={DashboardQueries}/>
+      <Route path="/" component={Dashboard} queries={DashboardQueries} />
+      {/* URL params from react-router are passed directly to your query.      */}
+      {/* Query params are available too, but must be whitelisted (see below). */}
+      <Route path="/widget/:widgetID" component={Widget} queries={WidgetQueries} />
     </Route>
   </Router>
 ), document.getElementById('react-root'));
@@ -62,7 +67,7 @@ can simulate the default behavior of rendering the previous view by returning
 
 # Query Parameters
 
-You can pass an array to the `queryParams` prop to specify which query
+You can pass an array to the `queryParams` prop to whitelist which query
 parameters should be passed in from the router and made available as
 variables to your root queries and containers:
 

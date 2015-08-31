@@ -10,7 +10,6 @@ export default class Container extends React.Component {
 
   static propTypes = {
     Component: React.PropTypes.func.isRequired,
-    routerProps: React.PropTypes.object.isRequired,
   };
 
   static contextTypes = {

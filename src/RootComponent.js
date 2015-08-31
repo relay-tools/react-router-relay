@@ -7,10 +7,6 @@ import RouteAggregator from './RouteAggregator';
 export default class RootComponent extends React.Component {
   static displayName = 'ReactRouterRelay.RootComponent';
 
-  static propTypes = {
-    routerProps: React.PropTypes.object.isRequired,
-  };
-
   static childContextTypes = {
     routeAggregator: React.PropTypes.instanceOf(RouteAggregator).isRequired,
   };
@@ -19,7 +15,7 @@ export default class RootComponent extends React.Component {
     super(props, context);
 
     this._routeAggregator = new RouteAggregator();
-    this._routeAggregator.updateRoute(props.routerProps);
+    this._routeAggregator.updateRoute(props);
   }
 
   getChildContext() {
@@ -29,12 +25,11 @@ export default class RootComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {routerProps} = nextProps;
-    if (routerProps.isTransitioning) {
+    if (nextProps.isTransitioning) {
       return;
     }
 
-    this._routeAggregator.updateRoute(routerProps);
+    this._routeAggregator.updateRoute(nextProps);
   }
 
   renderLoading = () => {
