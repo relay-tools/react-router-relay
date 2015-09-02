@@ -128,6 +128,6 @@ export default class RouteAggregator {
   }
   
   hasFragment(fragmentName) {
-    return !!this._fragmentSpecs[fragmentName];
+    return typeof this._fragmentSpecs[fragmentName] !== 'undefined';
   }
 }
