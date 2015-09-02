@@ -52,7 +52,7 @@ export default class RouteAggregator {
         const uniqueQueryName = this._getUniqueQueryName(query, queryName);
 
         relayRoute.queries[uniqueQueryName] =
-          () => query(component, routeParams);
+          () => typeof query === 'function' ? query(component, routeParams) : query;
         fragmentSpecs[uniqueQueryName] = {component, queryName};
       });
     });
@@ -125,5 +125,9 @@ export default class RouteAggregator {
   getFragment(fragmentName, variableMapping) {
     const {component, queryName} = this._fragmentSpecs[fragmentName];
     return component.getFragment(queryName, variableMapping);
+  }
+  
+  hasFragment(fragmentName) {
+    return !!this._fragmentSpecs[fragmentName];
   }
 }
