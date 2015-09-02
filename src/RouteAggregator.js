@@ -126,4 +126,8 @@ export default class RouteAggregator {
     const {component, queryName} = this._fragmentSpecs[fragmentName];
     return component.getFragment(queryName, variableMapping);
   }
+  
+  hasFragment(fragmentName) {
+    return this._fragmentSpecs[fragmentName] !== undefined;
+  }
 }
