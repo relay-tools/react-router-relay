@@ -38,7 +38,7 @@ export default class Container extends React.Component {
 
     const params = getParamsForRoute(routerProps);
     const {fragmentPointers, failure} =
-      routeAggregator.getData(queries, params);
+      routeAggregator.getData(route, queries, params);
 
     let shouldUpdate = true;
     let element;

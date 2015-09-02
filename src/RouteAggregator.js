@@ -5,8 +5,11 @@ import getParamsForRoute from './getParamsForRoute';
 
 export default class RouteAggregator {
   constructor() {
-    this._uniqueQueryNames = new WeakMap();
-    this._lastQueryIndex = 0;
+    // We need to use a map to track route indices instead of throwing them on
+    // the route itself with a Symbol to ensure that, when rendering on the
+    // server, each request generates route indices independently.
+    this._routeIndices = new WeakMap();
+    this._lastRouteIndex = 0;
 
     this.route = null;
     this._fragmentSpecs = null;
@@ -49,8 +52,10 @@ export default class RouteAggregator {
 
       Object.keys(queries).forEach(queryName => {
         const query = queries[queryName];
-        const uniqueQueryName = this._getUniqueQueryName(query, queryName);
+        const uniqueQueryName = this._getUniqueQueryName(route, queryName);
 
+        // The component and routeParams args here are no-ops if the query is
+        // using the shorthand syntax.
         relayRoute.queries[uniqueQueryName] =
           () => query(component, routeParams);
         fragmentSpecs[uniqueQueryName] = {component, queryName};
@@ -66,14 +71,17 @@ export default class RouteAggregator {
     this._fragmentSpecs = fragmentSpecs;
   }
 
-  _getUniqueQueryName(query, queryName) {
-    let uniqueQueryName = this._uniqueQueryNames.get(query);
-    if (uniqueQueryName === undefined) {
-      uniqueQueryName = `$$_${queryName}_${++this._lastQueryIndex}`;
-      this._uniqueQueryNames.set(query, uniqueQueryName);
+  _getUniqueQueryName(route, queryName) {
+    // There might be some edge case here where the query changes but the route
+    // object does not, in which case we'll keep using the old unique name.
+    // Anybody who does that deserves whatever they get, though.
+    let routeIndex = this._routeIndices.get(route);
+    if (routeIndex === undefined) {
+      routeIndex = ++this._lastRouteIndex;
+      this._routeIndices.set(route, routeIndex);
     }
 
-    return uniqueQueryName;
+    return `$$_route[${routeIndex}]_${queryName}`;
   }
 
   setLoading() {
@@ -89,7 +97,7 @@ export default class RouteAggregator {
     this._failure = [error, retry];
   }
 
-  getData(queries, params) {
+  getData(route, queries, params) {
     // Check that the subset of parameters used for this route match those used
     // for the fetched data.
     for (const paramName of Object.keys(params)) {
@@ -100,8 +108,7 @@ export default class RouteAggregator {
 
     const fragmentPointers = {};
     for (const queryName of Object.keys(queries)) {
-      const query = queries[queryName];
-      const uniqueQueryName = this._getUniqueQueryName(query, queryName);
+      const uniqueQueryName = this._getUniqueQueryName(route, queryName);
 
       const fragmentPointer = this._data[uniqueQueryName];
       if (!fragmentPointer) {
@@ -126,7 +133,7 @@ export default class RouteAggregator {
     const {component, queryName} = this._fragmentSpecs[fragmentName];
     return component.getFragment(queryName, variableMapping);
   }
-  
+
   hasFragment(fragmentName) {
     return this._fragmentSpecs[fragmentName] !== undefined;
   }
