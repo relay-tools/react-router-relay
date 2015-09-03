@@ -19,7 +19,12 @@ export default class RouteAggregator {
   }
 
   updateRoute(routerProps) {
-    const {branch, params, location} = routerProps;
+    const {params, location} = routerProps;
+
+    // TODO: Replace this hack with a proper way of reading routes.
+    const {routes} = location;
+    location.hasRoutes = true;
+    console.log(routes);
 
     const relayRoute = {
       name: null,
@@ -28,7 +33,7 @@ export default class RouteAggregator {
     };
     const fragmentSpecs = {};
 
-    branch.forEach(route => {
+    routes.forEach(route => {
       const {queries} = route;
       if (!queries) {
         return;
@@ -47,7 +52,7 @@ export default class RouteAggregator {
         component.displayName || component.name
       );
 
-      const routeParams = getParamsForRoute({route, branch, params, location});
+      const routeParams = getParamsForRoute({route, params, location});
       Object.assign(relayRoute.params, routeParams);
 
       Object.keys(queries).forEach(queryName => {
