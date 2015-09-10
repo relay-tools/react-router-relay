@@ -137,4 +137,10 @@ export default class RouteAggregator {
   hasFragment(fragmentName) {
     return this._fragmentSpecs[fragmentName] !== undefined;
   }
+
+  hasVariable(variableName) {
+    // It doesn't matter what the component variables are. The only variables
+    // we're going to pass down are the ones defined from our route parameters.
+    return this.route.params.hasOwnProperty(variableName);
+  }
 }
