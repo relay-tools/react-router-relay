@@ -1,12 +1,12 @@
-import {getRouteParams} from 'react-router/lib/RoutingUtils';
+import getRouteParams from 'react-router/lib/getRouteParams';
 
-export default function getParamsForRoute({route, branch, params, location}) {
+export default function getParamsForRoute({route, routes, params, location}) {
   const paramsForRoute = {};
 
   // Extract route params for current route and all ancestors.
-  for (const branchRoute of branch) {
-    Object.assign(paramsForRoute, getRouteParams(branchRoute, params));
-    if (branchRoute === route) {
+  for (const ancestorRoute of routes) {
+    Object.assign(paramsForRoute, getRouteParams(ancestorRoute, params));
+    if (ancestorRoute === route) {
       break;
     }
   }

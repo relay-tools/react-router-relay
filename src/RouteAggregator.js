@@ -18,9 +18,7 @@ export default class RouteAggregator {
     this._failure = null;
   }
 
-  updateRoute(routerProps) {
-    const {branch, params, location} = routerProps;
-
+  updateRoute({routes, params, location}) {
     const relayRoute = {
       name: null,
       queries: {},
@@ -28,7 +26,7 @@ export default class RouteAggregator {
     };
     const fragmentSpecs = {};
 
-    branch.forEach(route => {
+    routes.forEach(route => {
       const {queries} = route;
       if (!queries) {
         return;
@@ -47,7 +45,7 @@ export default class RouteAggregator {
         component.displayName || component.name
       );
 
-      const routeParams = getParamsForRoute({route, branch, params, location});
+      const routeParams = getParamsForRoute({route, routes, params, location});
       Object.assign(relayRoute.params, routeParams);
 
       Object.keys(queries).forEach(queryName => {
