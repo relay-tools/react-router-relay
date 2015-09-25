@@ -1,4 +1,5 @@
 import invariant from 'invariant';
+import isEqualShallow from 'is-equal-shallow';
 import Relay from 'react-relay';
 
 import getParamsForRoute from './getParamsForRoute';
@@ -62,6 +63,17 @@ export default class RouteAggregator {
 
     relayRoute.name =
       ['$$_aggregated', ...Object.keys(relayRoute.queries)].join('-');
+
+    // Don't change the route if it's the same as the previous route, to
+    // prevent Relay.RootContainer from fetching data twice if the previous
+    // request is still pending.
+    if (
+      this.route &&
+      relayRoute.name === this.route.name &&
+      isEqualShallow(relayRoute.params, this.route.params)
+    ) {
+      return;
+    }
 
     // RootContainer uses referential equality to check for route change, so
     // replace the route object entirely.
