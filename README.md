@@ -1,7 +1,5 @@
-# react-router-relay
+# react-router-relay [![npm version](https://badge.fury.io/js/react-router-relay.svg)](http://badge.fury.io/js/react-router-relay)
 [Relay](http://facebook.github.io/relay/) integration for [React Router](http://rackt.github.io/react-router/).
-
-[![npm version](https://badge.fury.io/js/react-router-relay.svg)](http://badge.fury.io/js/react-router-relay)
 
 ## Usage
 
