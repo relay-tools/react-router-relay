@@ -32,7 +32,6 @@
   "dependencies": {
     "babel-runtime": "^5.8.25",
     "invariant": "^2.1.1",
-    "is-equal-shallow": "^0.1.3",
     "react-static-container": "^1.0.0-alpha.1"
   },
   "peerDependencies": {

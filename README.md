@@ -24,7 +24,8 @@ ReactDOM.render((
     >
       <Route
         path="widgets" component={WidgetList}
-        queries={ViewerQueries} queryParams={['color']}
+        queries={ViewerQueries}
+        queryParams={['color']} stateParams={['limit']}
         renderLoading={() => <Loading />}
       />
       <Route
@@ -102,20 +103,33 @@ const widgetRoute = (
 );
 ```
 
-If your route has query parameters, just specify them on the `queryParams` prop on the `<Route>`, and they'll be added to the Relay route as well:
+If your route requires parameters from the location query or state, you can specify them respectively on the `queryParams` or `stateParams` props on the `<Route>`. `react-router-relay` will then add those parameters to the Relay route:
 
 ```js
 class WidgetList extends React.Component { /* ... */ }
 
 WidgetList = Relay.createContainer(WidgetList, {
   initialVariables: {
-    color: null
+    color: null,
+    limit: null
+  },
+
+  prepareVariables(prevVariables) {
+    let {limit} = prevVariables;
+    if (limit == null) {
+      limit = 10;
+    }
+
+    return {
+      ...prevVariables,
+      limit
+    };
   },
 
   fragments: {
     viewer: () => Relay.QL`
       fragment on User {
-        widgets(color: $color, first: 10) {
+        widgets(color: $color, first: $limit) {
           edges {
             node {
               name
@@ -131,12 +145,13 @@ WidgetList = Relay.createContainer(WidgetList, {
 const widgetListRoute = (
   <Route
     path="widgets" component={WidgetList}
-    queries={ViewerQueries} queryParams={['color']}
+    queries={ViewerQueries}
+    queryParams={['color']} stateParams={['limit']}
   />
 );
 ```
 
-All URL and query parameters will be passed to the container as strings. If you need to convert them into something else, you can do so in `prepareVariables` on the container.
+All URL and query parameters will be passed to the container as strings. Any missing query or state parameters will be treated as `null`. If you need to convert or initialize those values, you can do so in `prepareVariables` on the container.
 
 ### Render Callbacks
 
@@ -148,8 +163,9 @@ You can pass in custom `renderLoading`, `renderFetched`, and `renderFailure` cal
 
 These have the same signature and behavior as they do on `Relay.RootContainer`, except that the argument to `renderFetched` also includes the injected props from React Router. As on `Relay.RootContainer`, the `renderLoading` callback can simulate the default behavior of rendering the previous view by returning `undefined`.
 
-### Caveats
+### Notes
 
+- `react-router-relay` only updates the Relay route on actual location changes. Specifically, it will not update the Relay route after changes to location state, so ensure that you update your container variables appropriately when updating location state.
 - Relay containers attempt to avoid re-rendering except when necessary. However, they can only do so when all props not through Relay are of scalar types. As the props injected by Relay Router into route components are not of static types, this optimization does not work there. As such, when using React Router with Relay, you should attempt to make the `render` method on any route components as lightweight as possible, and leave the real rendering work to child components that only receive scalar non-Relay props.
 
 ## Authors

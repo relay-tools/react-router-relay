@@ -1,5 +1,19 @@
 import getRouteParams from 'react-router/lib/getRouteParams';
 
+function getLocationParams(paramNames, paramSource) {
+  if (!paramNames) {
+    return null;
+  }
+
+  const paramsForRoute = {};
+  paramNames.forEach(name => {
+    const param = paramSource ? paramSource[name] : null;
+    paramsForRoute[name] = param !== undefined ? param : null;
+  });
+
+  return paramsForRoute;
+}
+
 export default function getParamsForRoute({route, routes, params, location}) {
   const paramsForRoute = {};
 
@@ -11,18 +25,9 @@ export default function getParamsForRoute({route, routes, params, location}) {
     }
   }
 
-  // Extract specified routes from query.
-  if (route.queryParams) {
-    // Can't use destructuring default value here, because location.query is
-    // null when no query string is present.
-    const query = location.query || {};
-
-    route.queryParams.forEach(queryParam => {
-      const queryValue = query[queryParam];
-      paramsForRoute[queryParam] =
-        queryValue !== undefined ? queryValue : null;
-    });
-  }
-
-  return paramsForRoute;
+  return Object.assign(
+    paramsForRoute,
+    getLocationParams(route.queryParams, location.query),
+    getLocationParams(route.stateParams, location.state)
+  );
 }
