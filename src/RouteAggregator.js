@@ -73,6 +73,16 @@ export default class RouteAggregator {
     // There might be some edge case here where the query changes but the route
     // object does not, in which case we'll keep using the old unique name.
     // Anybody who does that deserves whatever they get, though.
+
+    // Prefer an explicit route name if specified.
+    if (route.name) {
+      // The slightly different template here ensures that we can't have
+      // collisions with the below template.
+      return `$_${route.name}_${queryName}`;
+    }
+
+    // Otherwise, use referential equality on the route name to generate a
+    // unique index.
     let routeIndex = this._routeIndices.get(route);
     if (routeIndex === undefined) {
       routeIndex = ++this._lastRouteIndex;
