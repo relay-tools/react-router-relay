@@ -1,3 +1,5 @@
+import invariant from 'invariant';
+
 import getRouteParams from 'react-router/lib/getRouteParams';
 
 function getLocationParams(paramNames, paramSource) {
@@ -15,7 +17,7 @@ function getLocationParams(paramNames, paramSource) {
 }
 
 export default function getParamsForRoute({route, routes, params, location}) {
-  const paramsForRoute = {};
+  let paramsForRoute = {};
 
   // Extract route params for current route and all ancestors.
   for (const ancestorRoute of routes) {
@@ -31,19 +33,17 @@ export default function getParamsForRoute({route, routes, params, location}) {
     getLocationParams(route.stateParams, location.state)
   );
 
-  var prepareParams = route.prepareParams;
+  const {prepareParams} = route;
   if (prepareParams) {
-    if (typeof prepareParams !== 'function') {
-      throw new Error(
-        'react-router-relay: Expected `prepareParams` to be a function.'
-      );
-    }
+    invariant(
+      typeof prepareParams === 'function',
+      'react-router-relay: Expected `prepareParams` to be a function.'
+    );
     paramsForRoute = prepareParams(paramsForRoute, route);
-    if (typeof paramsForRoute !== 'object' || paramsForRoute === null) {
-      throw new Error(
-        'react-router-relay: Expected `prepareParams` to return an object.'
-      );
-    }
+    invariant(
+      typeof paramsForRoute === 'object' && paramsForRoute !== null,
+      'react-router-relay: Expected `prepareParams` to return an object.'
+    );
   }
 
   return paramsForRoute;
