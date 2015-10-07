@@ -74,19 +74,21 @@ If your route doesn't have any dependencies on Relay data, just don't declare `q
 Any URL parameters for routes with queries and their ancestors will be used as parameters on the Relay route. You can then use these route parameters as variables on your containers:
 
 ```js
+const WidgetQueries = {
+  widget: () => Relay.QL`
+    query {
+      widget(widgetId: $widgetId) # `widgetId` receives a value from the route
+    }
+  `,
+}
+
 class Widget extends React.Component { /* ... */ }
 
 Widget = Relay.createContainer(Widget, {
-  initialVariables: {
-    widgetId: null
-  },
-
   fragments: {
-    viewer: () => Relay.QL`
-      fragment on User {
-        widget(widgetId: $widgetId) {
-          name
-        }
+    widget: () => Relay.QL`
+      fragment on Widget {
+        name
       }
     `
   }
@@ -96,7 +98,7 @@ Widget = Relay.createContainer(Widget, {
 const widgetRoute = (
   <Route
     path="widgets/:widgetId" component={Widget}
-    queries={ViewerQueries}
+    queries={WidgetQueries}
   />
 );
 ```
