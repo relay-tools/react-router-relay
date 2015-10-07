@@ -149,7 +149,31 @@ const widgetListRoute = (
 );
 ```
 
-All URL and query parameters will be passed to the container as strings. Any missing query or state parameters will be treated as `null`. If you need to convert or initialize those values, you can do so in `prepareVariables` on the container.
+All URL and query parameters will be passed to the container as strings. Any missing query or state parameters will be treated as `null`. If you need to convert or initialize those values, you can do so with `prepareParams`:
+
+```javascript
+// `prepareParams` is a callback that `react-router-relay` calls with the
+// current `params` and `route` instance. It must return an object describing
+// the modified set of params. Use object spread syntax (`{...params}`) or
+// `Object.assign(...)` to include the original values along with overrides.
+var prepareParams = (params, route) => {
+  return {
+    ...params,
+    color: params.color || 'blue',
+    limit: parseInt(params.limit, 10),
+  };
+};
+
+const widgetListRoute = (
+  <Route
+    path="widgets" component={WidgetList}
+    queries={ViewerQueries}
+    queryParams={['color']}
+    stateParams={['limit']}
+    prepareParams={prepareParams}
+  />
+);
+```
 
 ### Render Callbacks
 
