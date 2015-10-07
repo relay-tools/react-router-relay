@@ -25,9 +25,26 @@ export default function getParamsForRoute({route, routes, params, location}) {
     }
   }
 
-  return Object.assign(
+  Object.assign(
     paramsForRoute,
     getLocationParams(route.queryParams, location.query),
     getLocationParams(route.stateParams, location.state)
   );
+
+  var prepareParams = route.prepareParams;
+  if (prepareParams) {
+    if (typeof prepareParams !== 'function') {
+      throw new Error(
+        'react-router-relay: Expected `prepareParams` to be a function.'
+      );
+    }
+    paramsForRoute = prepareParams(paramsForRoute, route);
+    if (typeof paramsForRoute !== 'object' || paramsForRoute === null) {
+      throw new Error(
+        'react-router-relay: Expected `prepareParams` to return an object.'
+      );
+    }
+  }
+
+  return paramsForRoute;
 }
