@@ -28,6 +28,7 @@ ReactDOM.render((
         path="widgets" component={WidgetList}
         queries={ViewerQueries}
         queryParams={['color']} stateParams={['limit']}
+        prepareParams={prepareWidgetListParams}
         renderLoading={() => <Loading />}
       />
       <Route
@@ -47,10 +48,10 @@ You can find an example implementation of TodoMVC with routing using `react-rout
 
 ### Installation
 
-The Relay technical preview requires React 14, which limits compatibility to the `1.0.0-beta` releases of React Router. Currently, `react-router-relay` supports the `1.0.0-beta3` release of React Router:
+Relay requires React 0.14, which limits compatibility to the pre-release versions of React Router. Currently, `react-router-relay` supports React Router v1.0.0-rc1:
 
 ```shell
-$ npm install react@next react-dom@next react-relay react-router@1.0.0-beta3
+$ npm install react react-dom react-relay react-router@latest
 $ npm install react-router-relay
 ```
 
@@ -75,7 +76,7 @@ Just like with `Relay.RootContainer`, the component will receive the query resul
 
 If your route doesn't have any dependencies on Relay data, just don't declare `queries`. The only requirement is that any route that does define `queries` must have a Relay container as its component.
 
-Any URL parameters for routes with queries and their ancestors will be used as parameters on the Relay route. You can then use these route parameters as variables on your containers:
+Any URL parameters for routes with queries and their ancestors will be used as parameters on the Relay route:
 
 ```js
 const WidgetQueries = {
@@ -107,7 +108,11 @@ const widgetRoute = (
 );
 ```
 
-If your route requires parameters from the location query or state, you can specify them respectively on the `queryParams` or `stateParams` props on the `<Route>`. `react-router-relay` will then add those parameters to the Relay route:
+If your route requires parameters from the location query or state, you can specify them respectively on the `queryParams` or `stateParams` props on the `<Route>`. URL and query parameters will be strings, while missing query and state parameters will be `null`.
+
+If you need to convert or initialize these parameters, you can do so with `prepareParams`, which has the same signature and behavior as `prepareVariables` on a Relay container, except that it also receives the React Router route object as an argument.
+
+Additionally, you can use route parameters as variables on your containers:
 
 ```js
 class WidgetList extends React.Component { /* ... */ }
@@ -115,25 +120,14 @@ class WidgetList extends React.Component { /* ... */ }
 WidgetList = Relay.createContainer(WidgetList, {
   initialVariables: {
     color: null,
+    size: null,
     limit: null
-  },
-
-  prepareVariables(prevVariables) {
-    let {limit} = prevVariables;
-    if (limit == null) {
-      limit = 10;
-    }
-
-    return {
-      ...prevVariables,
-      limit
-    };
   },
 
   fragments: {
     viewer: () => Relay.QL`
       fragment on User {
-        widgets(color: $color, first: $limit) {
+        widgets(color: $color, size: $size, first: $limit) {
           edges {
             node {
               name
@@ -145,38 +139,22 @@ WidgetList = Relay.createContainer(WidgetList, {
   }
 });
 
-// This handles e.g. /widgets?color=blue.
-const widgetListRoute = (
-  <Route
-    path="widgets" component={WidgetList}
-    queries={ViewerQueries}
-    queryParams={['color']} stateParams={['limit']}
-  />
-);
-```
-
-All URL and query parameters will be passed to the container as strings. Any missing query or state parameters will be treated as `null`. If you need to convert or initialize those values, you can do so with `prepareParams`:
-
-```javascript
-// `prepareParams` is a callback that `react-router-relay` calls with the
-// current `params` and `route` instance. It must return an object describing
-// the modified set of params. Use object spread syntax (`{...params}`) or
-// `Object.assign(...)` to include the original values along with overrides.
-var prepareParams = (params, route) => {
+function prepareWidgetListParams(params, route) {
   return {
     ...params,
-    color: params.color || 'blue',
-    limit: parseInt(params.limit, 10),
+    size: params.size ? parseInt(params.size, 10) : null,
+    limit: params.limit || route.defaultLimit
   };
 };
 
+// This handles e.g. /widgets?color=blue&size=3.
 const widgetListRoute = (
   <Route
     path="widgets" component={WidgetList}
     queries={ViewerQueries}
-    queryParams={['color']}
-    stateParams={['limit']}
-    prepareParams={prepareParams}
+    queryParams={['color', 'size']} stateParams={['limit']}
+    prepareParams={prepareWidgetListParams}
+    defaultLimit={10}
   />
 );
 ```
@@ -195,7 +173,7 @@ These have the same signature and behavior as they do on `Relay.RootContainer`, 
 
 - `react-router-relay` only updates the Relay route on actual location changes. Specifically, it will not update the Relay route after changes to location state, so ensure that you update your container variables appropriately when updating location state.
 - `react-router-relay` uses referential equality on route objects to generate unique names for queries. If your `route` objects do not maintain referential equality, then you can specify a globally unique `name` property on the route to identify it.
-- Relay containers attempt to avoid re-rendering except when necessary. However, they can only do so when all props not through Relay are of scalar types. As the props injected by Relay Router into route components are not of static types, this optimization does not work there. As such, when using React Router with Relay, you should attempt to make the `render` method on any route components as lightweight as possible, and leave the real rendering work to child components that only receive scalar non-Relay props.
+- Relay's re-rendering optimizations only work when all non-Relay props are scalar. As the props injected by React Router are objects, they disable these re-rendering optimizations. To take maximum advantage of these optimizations, you should make the `render` methods on your route components as lightweight as possible, and do as much rendering work as possible in child components that only receive scalar and Relay props.
 
 ## Authors
 
