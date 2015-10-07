@@ -14,6 +14,10 @@ const ViewerQueries = {
   viewer: () => Relay.QL`query { viewer }`
 };
 
+const WidgetQueries = {
+  widget: () => Relay.QL`query { widget(widgetId: $widgetId) }`
+}
+
 ReactDOM.render((
   <Router history={history} createElement={ReactRouterRelay.createElement}>
     <Route
@@ -28,7 +32,7 @@ ReactDOM.render((
       />
       <Route
         path="widgets/:widgetId" component={Widget}
-        queries={ViewerQueries}
+        queries={WidgetQueries}
       />
     </Route>
   </Router>
@@ -79,7 +83,7 @@ const WidgetQueries = {
     query {
       widget(widgetId: $widgetId) # `widgetId` receives a value from the route
     }
-  `,
+  `
 }
 
 class Widget extends React.Component { /* ... */ }
