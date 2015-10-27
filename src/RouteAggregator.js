@@ -12,6 +12,7 @@ export default class RouteAggregator {
     this._lastRouteIndex = 0;
 
     this.route = null;
+    this.forceFetch = false;
     this._fragmentSpecs = null;
 
     this._data = {};
@@ -25,6 +26,7 @@ export default class RouteAggregator {
       params: {},
     };
     const fragmentSpecs = {};
+    let forceFetchRoute = false;
 
     routes.forEach(route => {
       const {queries} = route;
@@ -45,6 +47,10 @@ export default class RouteAggregator {
         component.displayName || component.name
       );
 
+      // If any route has the force fetch prop pass it to the RootContainer.
+      if (route.forceFetch) {
+        forceFetchRoute = true;
+      }
       const routeParams = getParamsForRoute({route, routes, params, location});
       Object.assign(relayRoute.params, routeParams);
 
@@ -66,6 +72,7 @@ export default class RouteAggregator {
     // RootContainer uses referential equality to check for route change, so
     // replace the route object entirely.
     this.route = relayRoute;
+    this.forceFetch = forceFetchRoute;
     this._fragmentSpecs = fragmentSpecs;
   }
 
