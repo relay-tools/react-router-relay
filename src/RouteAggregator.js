@@ -19,7 +19,7 @@ export default class RouteAggregator {
     this._readyState = null;
   }
 
-  updateRoute({routes, params, location}) {
+  updateRoute({routes, components, params, location}) {
     const relayRoute = {
       name: null,
       queries: {},
@@ -27,13 +27,13 @@ export default class RouteAggregator {
     };
     const fragmentSpecs = {};
 
-    routes.forEach(route => {
+    routes.forEach((route, i) => {
       const {queries} = route;
       if (!queries) {
         return;
       }
 
-      const {component} = route;
+      const component = components[i];
 
       // In principle not all container component routes have to specify
       // queries, because some of them might somehow receive fragments from
