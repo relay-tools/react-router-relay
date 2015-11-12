@@ -14,8 +14,8 @@ export default class RouteAggregator {
     this.route = null;
     this._fragmentSpecs = null;
 
-    this._data = {};
     this._failure = null;
+    this._data = {};
   }
 
   updateRoute({routes, params, location}) {
@@ -103,8 +103,8 @@ export default class RouteAggregator {
     return `$$_route[${routeIndex}]_${queryName}`;
   }
 
-  setLoading() {
-    this._failure = null;
+  setFailure(error, retry) {
+    this._failure = [error, retry];
   }
 
   setFetched(data) {
@@ -112,8 +112,8 @@ export default class RouteAggregator {
     this._data = data;
   }
 
-  setFailure(error, retry) {
-    this._failure = [error, retry];
+  setLoading() {
+    this._failure = null;
   }
 
   getData(route, queries, params) {

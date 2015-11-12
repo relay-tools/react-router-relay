@@ -2,36 +2,32 @@ import React from 'react';
 import StaticContainer from 'react-static-container';
 
 import getParamsForRoute from './getParamsForRoute';
-import RootComponent from './RootComponent';
 import RouteAggregator from './RouteAggregator';
 
-export default class Container extends React.Component {
-  static displayName = 'ReactRouterRelay.Container';
+export default class RouteContainer extends React.Component {
+  static displayName = 'RouteContainer';
 
   static propTypes = {
     Component: React.PropTypes.func.isRequired,
+    createElement: React.PropTypes.func.isRequired,
   };
 
   static contextTypes = {
-    routeAggregator: React.PropTypes.instanceOf(RouteAggregator),
+    routeAggregator: React.PropTypes.instanceOf(RouteAggregator).isRequired,
   };
 
   render() {
-    const {routeAggregator} = this.context;
-    if (!routeAggregator) {
-      return <RootComponent {...this.props} />;
-    }
-
-    const {Component, ...routerProps} = this.props;
+    const {Component, createElement, ...routerProps} = this.props;
     const {route} = routerProps;
+    const {routeAggregator} = this.context;
 
     const {queries} = route;
     if (!queries) {
-      return <Component {...routerProps} />;
+      return createElement(Component, routerProps);
     }
 
     const params = getParamsForRoute(routerProps);
-    const {fragmentPointers, failure} =
+    const {failure, fragmentPointers} =
       routeAggregator.getData(route, queries, params);
 
     let shouldUpdate = true;
@@ -53,7 +49,7 @@ export default class Container extends React.Component {
       if (renderFetched) {
         element = renderFetched(data);
       } else {
-        element = <Component {...data} />;
+        element = createElement(Component, data);
       }
     } else {
       const {renderLoading} = route;

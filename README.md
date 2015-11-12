@@ -3,10 +3,10 @@
 
 ## Usage
 
-Use `ReactRouterRelay.createElement` on your `<Router>`, then define Relay queries and render callbacks for each of your routes:
+Use `<RelayRouter>` or `<RelayRoutingContext>` instead of `<Router>` or `<RoutingContext>` respectively, then define Relay queries and render callbacks for each of your routes:
 
 ```js
-import ReactRouterRelay from 'react-router-relay';
+import {RelayRouter} from 'react-router-relay';
 
 /* ... */
 
@@ -19,7 +19,7 @@ const WidgetQueries = {
 }
 
 ReactDOM.render((
-  <Router history={history} createElement={ReactRouterRelay.createElement}>
+  <RelayRouter history={history}>
     <Route
       path="/" component={Application}
       queries={ViewerQueries}
@@ -53,7 +53,7 @@ $ npm install react react-dom react-relay react-router
 $ npm install react-router-relay
 ```
 
-### Routes and Queries
+### Routes and queries
 
 For each of your routes that requires data from Relay, define a `queries` prop on the `<Route>`. These should be just like the queries on a Relay route:
 
@@ -157,7 +157,7 @@ const widgetListRoute = (
 );
 ```
 
-### Render Callbacks
+### Render callbacks
 
 You can pass in custom `renderLoading`, `renderFetched`, and `renderFailure` callbacks to your routes:
 
