@@ -1,2 +1,2 @@
-import createElement from './createElement';
-export default {createElement};
+export RelayRouter from './RelayRouter';
+export RelayRoutingContext from './RelayRoutingContext';

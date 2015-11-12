@@ -1,18 +1,24 @@
 import React from 'react';
 import Relay from 'react-relay';
+import {RoutingContext} from 'react-router';
 
-import Container from './Container';
 import RouteAggregator from './RouteAggregator';
+import RouteContainer from './RouteContainer';
 
 export default class RootComponent extends React.Component {
   static displayName = 'ReactRouterRelay.RootComponent';
 
   static propTypes = {
-    routes: React.PropTypes.array.isRequired,
+    createElement: React.PropTypes.func.isRequired,
+    location: React.PropTypes.object.isRequired,
   };
 
   static childContextTypes = {
     routeAggregator: React.PropTypes.instanceOf(RouteAggregator).isRequired,
+  };
+
+  static defaultProps = {
+    createElement: React.createElement,
   };
 
   constructor(props, context) {
@@ -29,21 +35,21 @@ export default class RootComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.routes === this.props.routes) {
+    if (nextProps.location === this.props.location) {
       return;
     }
 
     this._routeAggregator.updateRoute(nextProps);
   }
 
-  renderLoading = () => {
-    this._routeAggregator.setLoading();
-    return this.renderComponent();
-  };
-
-  renderFetched = (data) => {
-    this._routeAggregator.setFetched(data);
-    return this.renderComponent();
+  createElement = (Component, props) => {
+    return (
+      <RouteContainer
+        {...props}
+        Component={Component}
+        createElement={this.props.createElement}
+      />
+    );
   };
 
   renderFailure = (error, retry) => {
@@ -51,18 +57,34 @@ export default class RootComponent extends React.Component {
     return this.renderComponent();
   };
 
+  renderFetched = (data, readyState) => {
+    this._routeAggregator.setFetched(data, readyState);
+    return this.renderComponent();
+  };
+
+  renderLoading = () => {
+    this._routeAggregator.setLoading();
+    return this.renderComponent();
+  };
+
   renderComponent() {
-    return <Container {...this.props} />;
+    return (
+      <RoutingContext
+        {...this.props}
+        createElement={this.createElement}
+      />
+    );
   }
 
   render() {
     return (
       <Relay.RootContainer
+        {...this.props}
         Component={this._routeAggregator}
-        route={this._routeAggregator.route}
-        renderLoading={this.renderLoading}
-        renderFetched={this.renderFetched}
         renderFailure={this.renderFailure}
+        renderFetched={this.renderFetched}
+        renderLoading={this.renderLoading}
+        route={this._routeAggregator.route}
       />
     );
   }

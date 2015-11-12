@@ -1,12 +1,14 @@
-# react-router-relay [![npm version](https://badge.fury.io/js/react-router-relay.svg)](http://badge.fury.io/js/react-router-relay)
+# react-router-relay [![npm version][npm-badge]][npm]
 [Relay](http://facebook.github.io/relay/) integration for [React Router](http://rackt.github.io/react-router/).
+
+[![Discord][discord-badge]][discord]
 
 ## Usage
 
-Use `ReactRouterRelay.createElement` on your `<Router>`, then define Relay queries and render callbacks for each of your routes:
+Use `<RelayRouter>` or `<RelayRoutingContext>` instead of `<Router>` or `<RoutingContext>` respectively, then define Relay queries and render callbacks for each of your routes:
 
 ```js
-import ReactRouterRelay from 'react-router-relay';
+import {RelayRouter} from 'react-router-relay';
 
 /* ... */
 
@@ -19,7 +21,7 @@ const WidgetQueries = {
 }
 
 ReactDOM.render((
-  <Router history={history} createElement={ReactRouterRelay.createElement}>
+  <RelayRouter history={history}>
     <Route
       path="/" component={Application}
       queries={ViewerQueries}
@@ -48,14 +50,12 @@ You can find an example implementation of TodoMVC with routing using `react-rout
 
 ### Installation
 
-Relay requires React 0.14, which limits compatibility to the pre-release versions of React Router. Currently, `react-router-relay` supports React Router v1.0.0-rc3:
-
 ```shell
-$ npm install react react-dom react-relay react-router@latest
+$ npm install react react-dom react-relay react-router
 $ npm install react-router-relay
 ```
 
-### Routes and Queries
+### Routes and queries
 
 For each of your routes that requires data from Relay, define a `queries` prop on the `<Route>`. These should be just like the queries on a Relay route:
 
@@ -159,7 +159,7 @@ const widgetListRoute = (
 );
 ```
 
-### Render Callbacks
+### Render callbacks
 
 You can pass in custom `renderLoading`, `renderFetched`, and `renderFailure` callbacks to your routes:
 
@@ -168,6 +168,17 @@ You can pass in custom `renderLoading`, `renderFetched`, and `renderFailure` cal
 ```
 
 These have the same signature and behavior as they do on `Relay.RootContainer`, except that the argument to `renderFetched` also includes the injected props from React Router. As on `Relay.RootContainer`, the `renderLoading` callback can simulate the default behavior of rendering the previous view by returning `undefined`.
+
+### Additional `Relay.RootContainer` configuration
+
+We pass through additional props on `<RelayRouter>` or `<RelayRoutingContext>` are to the underlying `Relay.RootContainer`. You can use this to control props like `forceFetch` on the `Relay.RootContainer`:
+
+```js
+<RelayRouter
+  history={history} routes={routes}
+  forceFetch={true}
+/>
+```
 
 ### Notes
 
@@ -180,3 +191,9 @@ These have the same signature and behavior as they do on `Relay.RootContainer`, 
 - [@devknoll](https://github.com/devknoll)
 - [@cpojer](https://github.com/cpojer)
 - [@taion](https://github.com/taion)
+
+[npm-badge]: https://img.shields.io/npm/v/react-router-relay.svg
+[npm]: https://www.npmjs.com/package/react-router-relay
+
+[discord-badge]: https://img.shields.io/badge/Discord-join%20chat%20%E2%86%92-738bd7.svg?style=flat-square
+[discord]: https://discord.gg/0ZcbPKXt5bX40xsQ

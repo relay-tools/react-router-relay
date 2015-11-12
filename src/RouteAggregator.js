@@ -14,11 +14,12 @@ export default class RouteAggregator {
     this.route = null;
     this._fragmentSpecs = null;
 
-    this._data = {};
     this._failure = null;
+    this._data = {};
+    this._readyState = null;
   }
 
-  updateRoute({routes, params, location}) {
+  updateRoute({routes, components, params, location}) {
     const relayRoute = {
       name: null,
       queries: {},
@@ -26,13 +27,13 @@ export default class RouteAggregator {
     };
     const fragmentSpecs = {};
 
-    routes.forEach(route => {
+    routes.forEach((route, i) => {
       const {queries} = route;
       if (!queries) {
         return;
       }
 
-      const {component} = route;
+      const component = components[i];
 
       // In principle not all container component routes have to specify
       // queries, because some of them might somehow receive fragments from
@@ -52,10 +53,21 @@ export default class RouteAggregator {
         const query = queries[queryName];
         const uniqueQueryName = this._getUniqueQueryName(route, queryName);
 
-        // The component and routeParams args here are no-ops if the query is
-        // using the shorthand syntax.
-        relayRoute.queries[uniqueQueryName] =
-          () => query(component, routeParams);
+        // Relay depends on the argument count of the query function, so try to
+        // preserve it as well as possible.
+        let wrappedQuery;
+        if (query.length === 0) {
+          // Relay doesn't like using the exact same query in multiple places,
+          // so wrap it to prevent that when sharing queries between routes.
+          wrappedQuery = () => query();
+        } else {
+          // We just need the query function to have > 0 arguments.
+          /* eslint-disable no-unused-vars */
+          wrappedQuery = _ => query(component, routeParams);
+          /* eslint-enable */
+        }
+
+        relayRoute.queries[uniqueQueryName] = wrappedQuery;
         fragmentSpecs[uniqueQueryName] = {component, queryName};
       });
     });
@@ -92,17 +104,18 @@ export default class RouteAggregator {
     return `$$_route[${routeIndex}]_${queryName}`;
   }
 
-  setLoading() {
-    this._failure = null;
-  }
-
-  setFetched(data) {
-    this._failure = null;
-    this._data = data;
-  }
-
   setFailure(error, retry) {
     this._failure = [error, retry];
+  }
+
+  setFetched(data, readyState) {
+    this._failure = null;
+    this._data = data;
+    this._readyState = readyState;
+  }
+
+  setLoading() {
+    this._failure = null;
   }
 
   getData(route, queries, params) {
@@ -126,7 +139,10 @@ export default class RouteAggregator {
       fragmentPointers[queryName] = fragmentPointer;
     }
 
-    return {fragmentPointers};
+    return {
+      fragmentPointers,
+      readyState: this._readyState,
+    };
   }
 
   _getDataNotFound() {
