@@ -48,10 +48,8 @@ You can find an example implementation of TodoMVC with routing using `react-rout
 
 ### Installation
 
-Relay requires React 0.14, which limits compatibility to the pre-release versions of React Router. Currently, `react-router-relay` supports React Router v1.0.0-rc3:
-
 ```shell
-$ npm install react react-dom react-relay react-router@latest
+$ npm install react react-dom react-relay react-router
 $ npm install react-router-relay
 ```
 
