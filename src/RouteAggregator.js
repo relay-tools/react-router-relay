@@ -16,6 +16,7 @@ export default class RouteAggregator {
 
     this._failure = null;
     this._data = {};
+    this._readyState = null;
   }
 
   updateRoute({routes, params, location}) {
@@ -107,9 +108,10 @@ export default class RouteAggregator {
     this._failure = [error, retry];
   }
 
-  setFetched(data) {
+  setFetched(data, readyState) {
     this._failure = null;
     this._data = data;
+    this._readyState = readyState;
   }
 
   setLoading() {
@@ -137,7 +139,10 @@ export default class RouteAggregator {
       fragmentPointers[queryName] = fragmentPointer;
     }
 
-    return {fragmentPointers};
+    return {
+      fragmentPointers,
+      readyState: this._readyState,
+    };
   }
 
   _getDataNotFound() {

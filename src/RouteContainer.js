@@ -27,7 +27,7 @@ export default class RouteContainer extends React.Component {
     }
 
     const params = getParamsForRoute(routerProps);
-    const {failure, fragmentPointers} =
+    const {failure, fragmentPointers, readyState} =
       routeAggregator.getData(route, queries, params);
 
     let shouldUpdate = true;
@@ -47,7 +47,7 @@ export default class RouteContainer extends React.Component {
 
       const {renderFetched} = route;
       if (renderFetched) {
-        element = renderFetched(data);
+        element = renderFetched(data, readyState);
       } else {
         element = createElement(Component, data);
       }

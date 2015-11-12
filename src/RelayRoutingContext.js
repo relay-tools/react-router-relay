@@ -57,8 +57,8 @@ export default class RootComponent extends React.Component {
     return this.renderComponent();
   };
 
-  renderFetched = (data) => {
-    this._routeAggregator.setFetched(data);
+  renderFetched = (data, readyState) => {
+    this._routeAggregator.setFetched(data, readyState);
     return this.renderComponent();
   };
 
