@@ -1,6 +1,6 @@
 {
   "name": "react-router-relay",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Nested react-router routes for Relay",
   "files": [
     "lib",
