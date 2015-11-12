@@ -167,6 +167,17 @@ You can pass in custom `renderLoading`, `renderFetched`, and `renderFailure` cal
 
 These have the same signature and behavior as they do on `Relay.RootContainer`, except that the argument to `renderFetched` also includes the injected props from React Router. As on `Relay.RootContainer`, the `renderLoading` callback can simulate the default behavior of rendering the previous view by returning `undefined`.
 
+### Additional `Relay.RootContainer` configuration
+
+We pass through additional props on `<RelayRouter>` or `<RelayRoutingContext>` are to the underlying `Relay.RootContainer`. You can use this to control props like `forceFetch` on the `Relay.RootContainer`:
+
+```js
+<RelayRouter
+  history={history} routes={routes}
+  forceFetch={true}
+/>
+```
+
 ### Notes
 
 - `react-router-relay` only updates the Relay route on actual location changes. Specifically, it will not update the Relay route after changes to location state, so ensure that you update your container variables appropriately when updating location state.

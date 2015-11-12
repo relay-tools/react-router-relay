@@ -79,6 +79,7 @@ export default class RootComponent extends React.Component {
   render() {
     return (
       <Relay.RootContainer
+        {...this.props}
         Component={this._routeAggregator}
         renderFailure={this.renderFailure}
         renderFetched={this.renderFetched}
