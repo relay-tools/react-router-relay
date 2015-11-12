@@ -9,10 +9,9 @@
   ],
   "main": "lib/index.js",
   "scripts": {
-    "clean": "rimraf lib",
-    "build": "babel src --out-dir lib",
+    "build": "rimraf lib && babel src --out-dir lib",
     "lint": "eslint src",
-    "prepublish": "npm run clean && npm run build"
+    "prepublish": "npm run lint && npm run build"
   },
   "repository": {
     "type": "git",
