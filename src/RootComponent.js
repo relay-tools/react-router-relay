@@ -8,7 +8,7 @@ export default class RootComponent extends React.Component {
   static displayName = 'ReactRouterRelay.RootComponent';
 
   static propTypes = {
-    routes: React.PropTypes.array.isRequired,
+    location: React.PropTypes.object.isRequired,
   };
 
   static childContextTypes = {
@@ -29,7 +29,7 @@ export default class RootComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.routes === this.props.routes) {
+    if (nextProps.location === this.props.location) {
       return;
     }
 
