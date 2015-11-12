@@ -52,10 +52,21 @@ export default class RouteAggregator {
         const query = queries[queryName];
         const uniqueQueryName = this._getUniqueQueryName(route, queryName);
 
-        // The component and routeParams args here are no-ops if the query is
-        // using the shorthand syntax.
-        relayRoute.queries[uniqueQueryName] =
-          () => query(component, routeParams);
+        // Relay depends on the argument count of the query function, so try to
+        // preserve it as well as possible.
+        let wrappedQuery;
+        if (query.length === 0) {
+          // Relay doesn't like using the exact same query in multiple places,
+          // so wrap it to prevent that when sharing queries between routes.
+          wrappedQuery = () => query();
+        } else {
+          // We just need the query function to have > 0 arguments.
+          /* eslint-disable no-unused-vars */
+          wrappedQuery = _ => query(component, routeParams);
+          /* eslint-enable */
+        }
+
+        relayRoute.queries[uniqueQueryName] = wrappedQuery;
         fragmentSpecs[uniqueQueryName] = {component, queryName};
       });
     });
