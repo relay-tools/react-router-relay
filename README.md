@@ -38,7 +38,7 @@ ReactDOM.render((
         queries={WidgetQueries}
       />
     </Route>
-  </Router>
+  </RelayRouter>
 ), container);
 ```
 
