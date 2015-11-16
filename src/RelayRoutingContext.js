@@ -5,8 +5,8 @@ import {RoutingContext} from 'react-router';
 import RouteAggregator from './RouteAggregator';
 import RouteContainer from './RouteContainer';
 
-export default class RootComponent extends React.Component {
-  static displayName = 'ReactRouterRelay.RootComponent';
+export default class RelayRoutingContext extends React.Component {
+  static displayName = 'RelayRoutingContext';
 
   static propTypes = {
     createElement: React.PropTypes.func.isRequired,
