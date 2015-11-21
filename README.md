@@ -1,4 +1,4 @@
-# react-router-relay [![npm version][npm-badge]][npm]
+# react-router-relay [![npm][npm-badge]][npm]
 [Relay](http://facebook.github.io/relay/) integration for [React Router](http://rackt.github.io/react-router/).
 
 [![Discord][discord-badge]][discord]
@@ -196,5 +196,5 @@ We pass through additional props on `<RelayRouter>` or `<RelayRoutingContext>` a
 [npm-badge]: https://img.shields.io/npm/v/react-router-relay.svg
 [npm]: https://www.npmjs.com/package/react-router-relay
 
-[discord-badge]: https://img.shields.io/badge/Discord-join%20chat%20%E2%86%92-738bd7.svg?style=flat-square
+[discord-badge]: https://img.shields.io/badge/Discord-join%20chat%20%E2%86%92-738bd7.svg
 [discord]: https://discord.gg/0ZcbPKXt5bX40xsQ
