@@ -8,6 +8,7 @@
 Use `<RelayRouter>` or `<RelayRoutingContext>` instead of `<Router>` or `<RoutingContext>` respectively, then define Relay queries and render callbacks for each of your routes:
 
 ```js
+import {Route} from 'react-router';
 import {RelayRouter} from 'react-router-relay';
 
 /* ... */
