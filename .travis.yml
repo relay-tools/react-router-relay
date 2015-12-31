@@ -1,8 +1,13 @@
-language: node_js
 sudo: false
+
+language: node_js
 node_js:
   - stable
 
 script:
   - npm run lint
   - npm run build
+
+branches:
+  only:
+    - master

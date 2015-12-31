@@ -3,52 +3,49 @@
   "version": "0.8.0",
   "description": "Nested react-router routes for Relay",
   "files": [
-    "lib",
-    "LICENSE",
-    "README.md"
+    "lib"
   ],
   "main": "lib/index.js",
   "scripts": {
-    "build": "rimraf lib && babel src --out-dir lib",
+    "build": "rimraf lib && babel src -d lib",
     "lint": "eslint src",
-    "prepublish": "npm run lint && npm run build"
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/relay-tools/react-router-relay.git"
+    "url": "git+https://github.com/relay-tools/react-router-relay.git"
   },
   "keywords": [
     "relay",
     "react",
-    "router",
-    "nested"
+    "router"
   ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/relay-tools/react-router-relay/issues"
   },
-  "homepage": "https://github.com/relay-tools/react-router-relay",
+  "homepage": "https://github.com/relay-tools/react-router-relay#readme",
   "dependencies": {
     "babel-runtime": "5.x",
-    "invariant": "^2.1.2",
+    "invariant": "^2.2.0",
     "react-static-container": "^1.0.0"
   },
   "peerDependencies": {
-    "react": "^0.14.2",
-    "react-relay": ">=0.4.0",
-    "react-router": "^1.0.0"
+    "react": ">=0.14.0",
+    "react-relay": ">=0.6.0",
+    "react-router": ">=2.0.0-rc2"
   },
   "devDependencies": {
     "babel": "5.x",
-    "babel-eslint": "^4.1.5",
+    "babel-eslint": "^4.1.6",
     "babel-plugin-dev-expression": "^0.1.0",
-    "eslint": "^1.9.0",
-    "eslint-config-airbnb": "^1.0.0",
-    "eslint-plugin-react": "^3.8.0",
-    "react": "^0.14.2",
-    "react-dom": "^0.14.2",
-    "react-relay": "^0.5.0",
-    "react-router": "^1.0.0",
-    "rimraf": "^2.4.3"
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^2.1.1",
+    "eslint-plugin-react": "^3.13.1",
+    "react": "^0.14.5",
+    "react-dom": "^0.14.5",
+    "react-relay": "^0.6.0",
+    "react-router": "^2.0.0-rc4",
+    "rimraf": "^2.5.0"
   }
 }

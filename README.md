@@ -5,10 +5,10 @@
 
 ## Usage
 
-Use `<RelayRouter>` or `<RelayRoutingContext>` instead of `<Router>` or `<RoutingContext>` respectively, then define Relay queries and render callbacks for each of your routes:
+Use `<RelayRouter>` or `<RelayRouterContext>` instead of `<Router>` or `<RouterContext>` respectively, then define Relay queries and render callbacks for each of your routes:
 
 ```js
-import {RelayRouter} from 'react-router-relay';
+import { RelayRouter } from 'react-router-relay';
 
 /* ... */
 
@@ -49,6 +49,8 @@ You can find an example implementation of TodoMVC with routing using `react-rout
 ## Guide
 
 ### Installation
+
+**Note:** Releases from v0.9.0 onward only support React Router v2.x. For React Router 1.x support, use v0.8.0 or earlier.
 
 ```shell
 $ npm install react react-dom react-relay react-router
@@ -171,7 +173,7 @@ These have the same signature and behavior as they do on `Relay.RootContainer`, 
 
 ### Additional `Relay.RootContainer` configuration
 
-We pass through additional props on `<RelayRouter>` or `<RelayRoutingContext>` are to the underlying `Relay.RootContainer`. You can use this to control props like `forceFetch` on the `Relay.RootContainer`:
+We pass through additional props on `<RelayRouter>` or `<RelayRouterContext>` are to the underlying `Relay.RootContainer`. You can use this to control props like `forceFetch` on the `Relay.RootContainer`:
 
 ```js
 <RelayRouter
