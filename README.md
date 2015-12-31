@@ -1,4 +1,4 @@
-# react-router-relay [![npm][npm-badge]][npm]
+# react-router-relay [![Travis][build-badge]][build] [![npm][npm-badge]][npm]
 [Relay](http://facebook.github.io/relay/) integration for [React Router](http://rackt.github.io/react-router/).
 
 [![Discord][discord-badge]][discord]
@@ -194,6 +194,9 @@ We pass through additional props on `<RelayRouter>` or `<RelayRouterContext>` ar
 - [@devknoll](https://github.com/devknoll)
 - [@cpojer](https://github.com/cpojer)
 - [@taion](https://github.com/taion)
+
+[build-badge]: https://img.shields.io/travis/relay-tools/react-router-relay/master.svg
+[build]: https://travis-ci.org/relay-tools/react-router-relay
 
 [npm-badge]: https://img.shields.io/npm/v/react-router-relay.svg
 [npm]: https://www.npmjs.com/package/react-router-relay

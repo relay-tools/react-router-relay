@@ -8,8 +8,10 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "rimraf lib && babel src -d lib",
-    "lint": "eslint src",
-    "prepublish": "npm run build"
+    "build-fixtures": "babel-node test/fixtures/updateSchema.js",
+    "lint": "eslint src test *.js",
+    "prepublish": "npm run build",
+    "test": "npm run lint && npm run build-fixtures && karma start"
   },
   "repository": {
     "type": "git",
@@ -36,16 +38,33 @@
     "react-router": ">=2.0.0-rc2"
   },
   "devDependencies": {
+    "array.prototype.find": "^1.0.0",
     "babel": "5.x",
+    "babel-core": "5.x",
     "babel-eslint": "^4.1.6",
+    "babel-loader": "5.x",
     "babel-plugin-dev-expression": "^0.1.0",
+    "babel-relay-plugin": "0.6.0",
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^2.1.1",
     "eslint-plugin-react": "^3.13.1",
+    "graphql": "^0.4.14",
+    "graphql-relay": "^0.3.6",
+    "karma": "^0.13.16",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-firefox-launcher": "^0.1.7",
+    "karma-mocha": "^0.2.1",
+    "karma-mocha-reporter": "^1.1.5",
+    "karma-sinon-chai": "^1.1.0",
+    "karma-sourcemap-loader": "^0.3.6",
+    "karma-webpack": "^1.7.0",
+    "mocha": "^2.3.4",
     "react": "^0.14.5",
     "react-dom": "^0.14.5",
     "react-relay": "^0.6.0",
     "react-router": "^2.0.0-rc4",
-    "rimraf": "^2.5.0"
+    "relay-local-schema": "^0.3.1",
+    "rimraf": "^2.5.0",
+    "webpack": "^1.12.9"
   }
 }
