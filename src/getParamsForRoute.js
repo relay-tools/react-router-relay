@@ -16,7 +16,9 @@ function getLocationParams(paramNames, paramSource) {
   return paramsForRoute;
 }
 
-export default function getParamsForRoute({route, routes, params, location}) {
+export default function getParamsForRoute(
+  { route, routes, params, location }
+) {
   let paramsForRoute = {};
 
   // Extract route params for current route and all ancestors.
@@ -33,7 +35,7 @@ export default function getParamsForRoute({route, routes, params, location}) {
     getLocationParams(route.stateParams, location.state)
   );
 
-  const {prepareParams} = route;
+  const { prepareParams } = route;
   if (prepareParams) {
     invariant(
       typeof prepareParams === 'function',

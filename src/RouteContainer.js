@@ -17,17 +17,17 @@ export default class RouteContainer extends React.Component {
   };
 
   render() {
-    const {Component, createElement, ...routerProps} = this.props;
-    const {route} = routerProps;
-    const {routeAggregator} = this.context;
+    const { Component, createElement, ...routerProps } = this.props;
+    const { route } = routerProps;
+    const { routeAggregator } = this.context;
 
-    const {queries} = route;
+    const { queries } = route;
     if (!queries) {
       return createElement(Component, routerProps);
     }
 
     const params = getParamsForRoute(routerProps);
-    const {failure, fragmentPointers, readyState} =
+    const { failure, fragmentPointers, readyState } =
       routeAggregator.getData(route, queries, params);
 
     let shouldUpdate = true;
@@ -35,7 +35,7 @@ export default class RouteContainer extends React.Component {
 
     // This is largely copied from RelayRootContainer#render.
     if (failure) {
-      const {renderFailure} = route;
+      const { renderFailure } = route;
       if (renderFailure) {
         const [error, retry] = failure;
         element = renderFailure(error, retry);
@@ -43,16 +43,16 @@ export default class RouteContainer extends React.Component {
         element = null;
       }
     } else if (fragmentPointers) {
-      const data = {...routerProps, ...params, ...fragmentPointers};
+      const data = { ...routerProps, ...params, ...fragmentPointers };
 
-      const {renderFetched} = route;
+      const { renderFetched } = route;
       if (renderFetched) {
         element = renderFetched(data, readyState);
       } else {
         element = createElement(Component, data);
       }
     } else {
-      const {renderLoading} = route;
+      const { renderLoading } = route;
       if (renderLoading) {
         element = renderLoading();
       } else {

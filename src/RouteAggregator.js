@@ -19,7 +19,7 @@ export default class RouteAggregator {
     this._readyState = null;
   }
 
-  updateRoute({routes, components, params, location}) {
+  updateRoute({ routes, components, params, location }) {
     const relayRoute = {
       name: null,
       queries: {},
@@ -28,7 +28,7 @@ export default class RouteAggregator {
     const fragmentSpecs = {};
 
     routes.forEach((route, i) => {
-      const {queries} = route;
+      const { queries } = route;
       if (!queries) {
         return;
       }
@@ -46,7 +46,7 @@ export default class RouteAggregator {
         component.displayName || component.name
       );
 
-      const routeParams = getParamsForRoute({route, routes, params, location});
+      const routeParams = getParamsForRoute({ route, routes, params, location });
       Object.assign(relayRoute.params, routeParams);
 
       Object.keys(queries).forEach(queryName => {
@@ -68,7 +68,7 @@ export default class RouteAggregator {
         }
 
         relayRoute.queries[uniqueQueryName] = wrappedQuery;
-        fragmentSpecs[uniqueQueryName] = {component, queryName};
+        fragmentSpecs[uniqueQueryName] = { component, queryName };
       });
     });
 
@@ -146,7 +146,7 @@ export default class RouteAggregator {
   }
 
   _getDataNotFound() {
-    return {failure: this._failure};
+    return { failure: this._failure };
   }
 
   getFragmentNames() {
@@ -154,7 +154,7 @@ export default class RouteAggregator {
   }
 
   getFragment(fragmentName, variableMapping) {
-    const {component, queryName} = this._fragmentSpecs[fragmentName];
+    const { component, queryName } = this._fragmentSpecs[fragmentName];
     return component.getFragment(queryName, variableMapping);
   }
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import Relay from 'react-relay';
-import {RoutingContext} from 'react-router';
+import { RouterContext } from 'react-router';
 
 import RouteAggregator from './RouteAggregator';
 import RouteContainer from './RouteContainer';
 
-export default class RelayRoutingContext extends React.Component {
-  static displayName = 'RelayRoutingContext';
+export default class RelayRouterContext extends React.Component {
+  static displayName = 'RelayRouterContext';
 
   static propTypes = {
     createElement: React.PropTypes.func.isRequired,
@@ -69,7 +69,7 @@ export default class RelayRoutingContext extends React.Component {
 
   renderComponent() {
     return (
-      <RoutingContext
+      <RouterContext
         {...this.props}
         createElement={this.createElement}
       />

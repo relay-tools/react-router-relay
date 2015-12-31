@@ -1,14 +1,14 @@
-# react-router-relay [![npm][npm-badge]][npm]
+# react-router-relay [![Travis][build-badge]][build] [![npm][npm-badge]][npm]
 [Relay](http://facebook.github.io/relay/) integration for [React Router](http://rackt.github.io/react-router/).
 
 [![Discord][discord-badge]][discord]
 
 ## Usage
 
-Use `<RelayRouter>` or `<RelayRoutingContext>` instead of `<Router>` or `<RoutingContext>` respectively, then define Relay queries and render callbacks for each of your routes:
+Use `<RelayRouter>` or `<RelayRouterContext>` instead of `<Router>` or `<RouterContext>` respectively, then define Relay queries and render callbacks for each of your routes:
 
 ```js
-import {RelayRouter} from 'react-router-relay';
+import { RelayRouter } from 'react-router-relay';
 
 /* ... */
 
@@ -49,6 +49,8 @@ You can find an example implementation of TodoMVC with routing using `react-rout
 ## Guide
 
 ### Installation
+
+**Note:** Releases from v0.9.0 onward only support React Router v2.x. For React Router 1.x support, use v0.8.0 or earlier.
 
 ```shell
 $ npm install react react-dom react-relay react-router
@@ -171,7 +173,7 @@ These have the same signature and behavior as they do on `Relay.RootContainer`, 
 
 ### Additional `Relay.RootContainer` configuration
 
-We pass through additional props on `<RelayRouter>` or `<RelayRoutingContext>` are to the underlying `Relay.RootContainer`. You can use this to control props like `forceFetch` on the `Relay.RootContainer`:
+We pass through additional props on `<RelayRouter>` or `<RelayRouterContext>` are to the underlying `Relay.RootContainer`. You can use this to control props like `forceFetch` on the `Relay.RootContainer`:
 
 ```js
 <RelayRouter
@@ -192,6 +194,9 @@ We pass through additional props on `<RelayRouter>` or `<RelayRoutingContext>` a
 - [@devknoll](https://github.com/devknoll)
 - [@cpojer](https://github.com/cpojer)
 - [@taion](https://github.com/taion)
+
+[build-badge]: https://img.shields.io/travis/relay-tools/react-router-relay/master.svg
+[build]: https://travis-ci.org/relay-tools/react-router-relay
 
 [npm-badge]: https://img.shields.io/npm/v/react-router-relay.svg
 [npm]: https://www.npmjs.com/package/react-router-relay
