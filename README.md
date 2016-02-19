@@ -1,5 +1,5 @@
 # react-router-relay [![Travis][build-badge]][build] [![npm][npm-badge]][npm]
-[Relay](http://facebook.github.io/relay/) integration for [React Router](http://rackt.github.io/react-router/).
+[Relay](http://facebook.github.io/relay/) integration for [React Router](https://github.com/reactjs/react-router).
 
 [![Discord][discord-badge]][discord]
 
