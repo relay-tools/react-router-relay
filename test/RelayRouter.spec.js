@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactTestUtils from 'react/lib/ReactTestUtils';
 import Relay from 'react-relay';
-import { IndexRoute, Route } from 'react-router';
+import { Route } from 'react-router';
 import createMemoryHistory from 'react-router/lib/createMemoryHistory';
 import RelayLocalSchema from 'relay-local-schema';
 
@@ -19,15 +19,12 @@ describe('<RelayRouter>', () => {
   describe('kitchen sink', () => {
     class Widget extends React.Component {
       render() {
-        const { route, widget, children } = this.props;
+        const { widget, first, second } = this.props;
 
         return (
-          <div>
-            <div className={route.className}>
-              {widget.name}
-            </div>
-
-            {children}
+          <div className={widget.name}>
+            {first}
+            {second}
           </div>
         );
       }
@@ -50,25 +47,16 @@ describe('<RelayRouter>', () => {
         queries={{
           widget: () => Relay.QL`query { widget }`,
         }}
-        className="basic"
       >
         <Route
           path=":pathName"
-          component={WidgetContainer}
+          components={{ first: WidgetContainer, second: WidgetContainer }}
           queries={{
-            widget: () => Relay.QL`query { widgetByArg(name: $pathName) }`,
+            first: { widget: () => Relay.QL`query { widgetByArg(name: $pathName) }` },
+            second: { widget: () => Relay.QL`query { widgetByArg(name: $queryName) }` },
           }}
-          className="path"
-        >
-          <IndexRoute
-            component={WidgetContainer}
-            queries={{
-              widget: () => Relay.QL`query { widgetByArg(name: $queryName) }`,
-            }}
-            queryParams={['queryName']}
-            className="query"
-          />
-        </Route>
+          queryParams={['queryName']}
+        />
       </Route>
     );
 
@@ -99,21 +87,15 @@ describe('<RelayRouter>', () => {
     });
 
     it('should support basic use', () => {
-      const node =
-        ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'basic');
-      expect(node.innerHTML).to.equal('foo');
+      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'foo');
     });
 
     it('should support path params', () => {
-      const node =
-        ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'path');
-      expect(node.innerHTML).to.equal('bar');
+      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'bar');
     });
 
     it('should support query params', () => {
-      const node =
-        ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'query');
-      expect(node.innerHTML).to.equal('baz');
+      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'baz');
     });
   });
 });
