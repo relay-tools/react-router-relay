@@ -45,9 +45,9 @@ export default class RelayRouterContext extends React.Component {
   createElement = (Component, props) => {
     return (
       <RouteContainer
-        {...props}
         Component={Component}
         createElement={this.props.createElement}
+        routerProps={props}
       />
     );
   };
