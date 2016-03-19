@@ -3,7 +3,7 @@ import Relay from 'react-relay';
 
 import getParamsForRoute from './getParamsForRoute';
 
-const DEFAULT_KEY = 'default';
+const DEFAULT_KEY = '@@default';
 
 export default class RouteAggregator {
   constructor() {
@@ -35,10 +35,10 @@ export default class RouteAggregator {
         return;
       }
 
-      const component = components[i];
+      const routeComponent = components[i];
 
-      const isObject = typeof component === 'object';
-      const componentMap = isObject ? component : { [DEFAULT_KEY]: component };
+      const isObject = typeof routeComponent === 'object';
+      const componentMap = isObject ? routeComponent : { [DEFAULT_KEY]: routeComponent };
       const queryMap = isObject ? queries : { [DEFAULT_KEY]: queries };
 
       Object.keys(componentMap).forEach(key => {
