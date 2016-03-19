@@ -42,15 +42,13 @@ export default class RelayRouterContext extends React.Component {
     this._routeAggregator.updateRoute(nextProps);
   }
 
-  createElement = (Component, props) => {
-    return (
-      <RouteContainer
-        {...props}
-        Component={Component}
-        createElement={this.props.createElement}
-      />
-    );
-  };
+  createElement = (Component, props) => (
+    <RouteContainer
+      {...props}
+      Component={Component}
+      createElement={this.props.createElement}
+    />
+  );
 
   renderFailure = (error, retry) => {
     this._routeAggregator.setFailure(error, retry);
