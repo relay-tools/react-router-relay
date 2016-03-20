@@ -50,14 +50,14 @@ You can find an example implementation of TodoMVC with routing using `react-rout
 
 ### Installation
 
-**Note:** Releases from v0.9.0 onward only support React Router v2.x. For React Router 1.x support, use v0.8.0 or earlier.
-
 ```shell
 $ npm install react react-dom react-relay react-router
 $ npm install react-router-relay
 ```
 
 ### Routes and queries
+
+#### Basic configuration
 
 For each of your routes that requires data from Relay, define a `queries` prop on the `<Route>`. These should be just like the queries on a Relay route:
 
@@ -78,7 +78,9 @@ Just like with `Relay.RootContainer`, the component will receive the query resul
 
 If your route doesn't have any dependencies on Relay data, just don't declare `queries`. The only requirement is that any route that does define `queries` must have a Relay container as its component.
 
-Any URL parameters for routes with queries and their ancestors will be used as parameters on the Relay route:
+#### Path parameters
+
+Any path parameters for routes with queries and their ancestors will be used as parameters on the Relay route:
 
 ```js
 const WidgetQueries = {
@@ -109,6 +111,8 @@ const widgetRoute = (
   />
 );
 ```
+
+#### Additional parameters
 
 If your route requires parameters from the location query or state, you can specify them respectively on the `queryParams` or `stateParams` props on the `<Route>`. URL and query parameters will be strings, while missing query and state parameters will be `null`.
 
@@ -161,6 +165,19 @@ const widgetListRoute = (
 );
 ```
 
+#### Named components
+
+For routes with named components, define `queries` as an object with the queries for each component by name:
+
+```js
+const route = (
+  <Route
+    components={{ foo: FooComponent, bar: BarComponent }}
+    queries={{ foo: FooQueries, bar: BarQueries }}
+  />
+);
+```
+
 ### Render callbacks
 
 You can pass in custom `renderLoading`, `renderFetched`, and `renderFailure` callbacks to your routes:
@@ -184,7 +201,6 @@ We pass through additional props on `<RelayRouter>` or `<RelayRouterContext>` ar
 
 ### Notes
 
-- `react-router-relay` currently does not support [named components](https://github.com/rackt/react-router/blob/master/docs/API.md#named-components).
 - `react-router-relay` only updates the Relay route on actual location changes. Specifically, it will not update the Relay route after changes to location state, so ensure that you update your container variables appropriately when updating location state.
 - `react-router-relay` uses referential equality on route objects to generate unique names for queries. If your `route` objects do not maintain referential equality, then you can specify a globally unique `name` property on the route to identify it.
 - Relay's re-rendering optimizations only work when all non-Relay props are scalar. As the props injected by React Router are objects, they disable these re-rendering optimizations. To take maximum advantage of these optimizations, you should make the `render` methods on your route components as lightweight as possible, and do as much rendering work as possible in child components that only receive scalar and Relay props.
