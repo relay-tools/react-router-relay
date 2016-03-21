@@ -10,8 +10,8 @@ export default class RouteContainer extends React.Component {
   static propTypes = {
     Component: React.PropTypes.func.isRequired,
     createElement: React.PropTypes.func.isRequired,
+    componentKey: React.PropTypes.string,
     queries: React.PropTypes.object.isRequired,
-    routerProps: React.PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -19,13 +19,15 @@ export default class RouteContainer extends React.Component {
   };
 
   render() {
-    const { Component, createElement, queries, routerProps } = this.props;
-    const { key, route } = routerProps;
+    const {
+      Component, createElement, componentKey, queries, ...routerProps,
+    } = this.props;
+    const { route } = routerProps;
     const { routeAggregator } = this.context;
 
     const params = getParamsForRoute(routerProps);
     const { failure, fragmentPointers, readyState } =
-      routeAggregator.getData(route, key, queries, params);
+      routeAggregator.getData(route, componentKey, queries, params);
 
     let shouldUpdate = true;
     let element;

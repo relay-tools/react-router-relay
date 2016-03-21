@@ -30,22 +30,26 @@ export default class RouteAggregator {
     const fragmentSpecs = {};
 
     routes.forEach((route, i) => {
-      const { queries } = route;
-      if (!queries) {
+      const routeQueries = route.queries;
+      if (!routeQueries) {
         return;
       }
 
       const routeComponent = components[i];
 
-      const isObject = typeof routeComponent === 'object';
-      const componentMap = isObject ? routeComponent : { [DEFAULT_KEY]: routeComponent };
-      const queryMap = isObject ? queries : { [DEFAULT_KEY]: queries };
+      let componentMap;
+      let queryMap;
+      if (typeof routeComponent === 'object') {
+        componentMap = routeComponent;
+        queryMap = routeQueries;
+      } else {
+        componentMap = { [DEFAULT_KEY]: routeComponent };
+        queryMap = { [DEFAULT_KEY]: routeQueries };
+      }
 
       Object.keys(componentMap).forEach(key => {
-        /* eslint-disable no-shadow */
         const component = componentMap[key];
         const queries = queryMap[key];
-        /* eslint-enable no-shadow */
 
         if (!queries) {
           return;
@@ -62,19 +66,22 @@ export default class RouteAggregator {
           component.displayName || component.name
         );
 
-        const routeParams = getParamsForRoute({ route, routes, params, location });
+        const routeParams =
+          getParamsForRoute({ route, routes, params, location });
         Object.assign(relayRoute.params, routeParams);
 
         Object.keys(queries).forEach(queryName => {
           const query = queries[queryName];
-          const uniqueQueryName = this._getUniqueQueryName(route, key, queryName);
+          const uniqueQueryName =
+            this._getUniqueQueryName(route, key, queryName);
 
-          // Relay depends on the argument count of the query function, so try to
-          // preserve it as well as possible.
+          // Relay depends on the argument count of the query function, so try
+          // to preserve it as well as possible.
           let wrappedQuery;
           if (query.length === 0) {
-            // Relay doesn't like using the exact same query in multiple places,
-            // so wrap it to prevent that when sharing queries between routes.
+            // Relay doesn't like using the exact same query in multiple
+            // places, so wrap it to prevent that when sharing queries between
+            // routes.
             wrappedQuery = () => query();
           } else {
             // We just need the query function to have > 0 arguments.
@@ -182,6 +189,8 @@ export default class RouteAggregator {
   hasVariable(variableName) {
     // It doesn't matter what the component variables are. The only variables
     // we're going to pass down are the ones defined from our route parameters.
-    return this.route.params.hasOwnProperty(variableName);
+    return Object.prototype.hasOwnProperty.call(
+      this.route.params, variableName
+    );
   }
 }
