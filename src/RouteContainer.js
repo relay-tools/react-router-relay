@@ -20,14 +20,14 @@ export default class RouteContainer extends React.Component {
 
   render() {
     const {
-      Component, createElement, componentKey, queries, ...routerProps,
+      Component, createElement, componentKey: key, queries, ...routerProps,
     } = this.props;
     const { route } = routerProps;
     const { routeAggregator } = this.context;
 
     const params = getParamsForRoute(routerProps);
     const { failure, fragmentPointers, readyState } =
-      routeAggregator.getData(route, componentKey, queries, params);
+      routeAggregator.getData(route, key, queries, params);
 
     let shouldUpdate = true;
     let element;
@@ -42,7 +42,7 @@ export default class RouteContainer extends React.Component {
         element = null;
       }
     } else if (fragmentPointers) {
-      const data = { ...routerProps, ...params, ...fragmentPointers };
+      const data = { key, ...routerProps, ...params, ...fragmentPointers };
 
       const { renderFetched } = route;
       if (renderFetched) {
