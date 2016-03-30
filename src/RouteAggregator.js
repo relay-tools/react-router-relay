@@ -1,4 +1,5 @@
 import invariant from 'invariant';
+import isEqual from 'lodash/isEqual';
 import Relay from 'react-relay';
 
 import getParamsForRoute from './getParamsForRoute';
@@ -146,7 +147,7 @@ export default class RouteAggregator {
     // Check that the subset of parameters used for this route match those used
     // for the fetched data.
     for (const paramName of Object.keys(params)) {
-      if (this._data[paramName] !== params[paramName]) {
+      if (!isEqual(this._data[paramName], params[paramName])) {
         return this._getDataNotFound();
       }
     }
