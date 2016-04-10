@@ -17,14 +17,23 @@ describe('<RelayRouter>', () => {
   });
 
   describe('kitchen sink', () => {
+
+    function StaticWidget(props) {
+      return (
+        <div className={props.static}/>
+      )
+    }
+
     class Widget extends React.Component {
       render() {
-        const { widget, first, second } = this.props;
+        const { widget, first, second, third, hello } = this.props;
 
         return (
           <div className={widget.name}>
+            <div className={hello} />
             {first}
             {second}
+            {third}
           </div>
         );
       }
@@ -44,18 +53,20 @@ describe('<RelayRouter>', () => {
       <Route
         path="/"
         component={WidgetContainer}
+        props={{ hello: 'World' }}
         queries={{
           widget: () => Relay.QL`query { widget }`,
         }}
       >
         <Route
           path=":pathName"
-          components={{ first: WidgetContainer, second: WidgetContainer }}
+          components={{ first: WidgetContainer, second: WidgetContainer, third: StaticWidget }}
           queries={{
             first: { widget: () => Relay.QL`query { widgetByArg(name: $pathName) }` },
             second: { widget: () => Relay.QL`query { widgetByArg(name: $queryName) }` },
           }}
           queryParams={['queryName']}
+          props={{ static: 'Hello' }}
         />
       </Route>
     );
@@ -97,5 +108,14 @@ describe('<RelayRouter>', () => {
     it('should support query params', () => {
       ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'baz');
     });
+
+    it('should support properties on RelayContainers', () => {
+      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'World');
+    });
+
+    it('should support properties on non-Relay Components', () => {
+      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'Hello');
+    });
+
   });
 });

@@ -12,6 +12,7 @@ export default class RouteContainer extends React.Component {
     createElement: React.PropTypes.func.isRequired,
     componentKey: React.PropTypes.string,
     queries: React.PropTypes.object.isRequired,
+    props: React.PropTypes.object,
   };
 
   static contextTypes = {
@@ -20,7 +21,7 @@ export default class RouteContainer extends React.Component {
 
   render() {
     const {
-      Component, createElement, componentKey: key, queries, ...routerProps,
+      Component, createElement, componentKey: key, queries, props, ...routerProps,
     } = this.props;
     const { route } = routerProps;
     const { routeAggregator } = this.context;
@@ -42,7 +43,7 @@ export default class RouteContainer extends React.Component {
         element = null;
       }
     } else if (fragmentPointers) {
-      const data = { key, ...routerProps, ...params, ...fragmentPointers };
+      const data = { key, ...props, ...routerProps, ...params, ...fragmentPointers };
 
       const { renderFetched } = route;
       if (renderFetched) {
