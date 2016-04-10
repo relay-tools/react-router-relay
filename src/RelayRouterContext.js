@@ -49,7 +49,7 @@ export default class RelayRouterContext extends React.Component {
 
     const queries = key ? route.queries && route.queries[key] : route.queries;
     if (!queries) {
-      return this.props.createElement(Component, props);
+      return this.props.createElement(Component, { ...props, ...props.route.props });
     }
 
     return (
@@ -59,6 +59,7 @@ export default class RelayRouterContext extends React.Component {
         createElement={this.props.createElement}
         componentKey={key}
         queries={queries}
+        props={route.props}
       />
     );
   };
