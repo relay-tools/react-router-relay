@@ -17,11 +17,10 @@ describe('<RelayRouter>', () => {
   });
 
   describe('kitchen sink', () => {
-
     function StaticWidget(props) {
       return (
         <div className={props.static}/>
-      )
+      );
     }
 
     class Widget extends React.Component {
@@ -116,6 +115,5 @@ describe('<RelayRouter>', () => {
     it('should support properties on non-Relay Components', () => {
       ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'Hello');
     });
-
   });
 });
