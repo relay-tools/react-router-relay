@@ -3,6 +3,8 @@
 
 [![Discord][discord-badge]][discord]
 
+**rrtr**? It's an actively-maintained fork of React Router. More details [here](https://medium.com/@taion/react-router-is-dead-long-live-rrtr-d229ca30e318).
+
 ## Usage
 
 Use `<RelayRouter>` or `<RelayRouterContext>` instead of `<Router>` or `<RouterContext>` respectively, then define Relay queries and render callbacks for each of your routes:
