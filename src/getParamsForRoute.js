@@ -1,6 +1,6 @@
 import invariant from 'invariant';
 
-import getRouteParams from 'react-router/lib/getRouteParams';
+import getRouteParams from 'rrtr/lib/getRouteParams';
 
 function getLocationParams(paramNames, paramSource) {
   if (!paramNames) {

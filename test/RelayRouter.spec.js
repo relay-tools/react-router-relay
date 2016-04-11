@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactTestUtils from 'react/lib/ReactTestUtils';
 import Relay from 'react-relay';
-import { Route } from 'react-router';
-import createMemoryHistory from 'react-router/lib/createMemoryHistory';
 import RelayLocalSchema from 'relay-local-schema';
+import { createMemoryHistory, Route } from 'rrtr';
 
 import { RelayRouter } from '../src';
 

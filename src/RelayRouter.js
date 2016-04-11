@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router } from 'react-router';
+import Router from 'rrtr/lib/Router';
 
 import RelayRouterContext from './RelayRouterContext';
 
