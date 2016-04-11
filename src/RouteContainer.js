@@ -34,7 +34,11 @@ export default class RouteContainer extends React.Component {
 
     // This is largely copied from RelayRootContainer#render.
     if (failure) {
-      const { renderFailure } = route;
+      let { renderFailure } = route;
+      if (renderFailure && typeof renderFailure === 'object') {
+        renderFailure = renderFailure[key];
+      }
+
       if (renderFailure) {
         const [error, retry] = failure;
         element = renderFailure(error, retry);
@@ -44,14 +48,22 @@ export default class RouteContainer extends React.Component {
     } else if (fragmentPointers) {
       const data = { key, ...routerProps, ...params, ...fragmentPointers };
 
-      const { renderFetched } = route;
+      let { renderFetched } = route;
+      if (renderFetched && typeof renderFetched === 'object') {
+        renderFetched = renderFetched[key];
+      }
+
       if (renderFetched) {
         element = renderFetched(data, readyState);
       } else {
         element = createElement(Component, data);
       }
     } else {
-      const { renderLoading } = route;
+      let { renderLoading } = route;
+      if (renderLoading && typeof renderLoading === 'object') {
+        renderLoading = renderLoading[key];
+      }
+
       if (renderLoading) {
         element = renderLoading();
       } else {
