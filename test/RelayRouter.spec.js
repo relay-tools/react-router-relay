@@ -19,12 +19,13 @@ describe('<RelayRouter>', () => {
   describe('kitchen sink', () => {
     class Widget extends React.Component {
       render() {
-        const { widget, first, second } = this.props;
+        const { widget, first, second, third } = this.props;
 
         return (
           <div className={widget.name}>
             {first}
             {second}
+            {third}
           </div>
         );
       }
@@ -50,10 +51,24 @@ describe('<RelayRouter>', () => {
       >
         <Route
           path=":pathName"
-          components={{ first: WidgetContainer, second: WidgetContainer }}
+          components={{
+            first: WidgetContainer,
+            second: WidgetContainer,
+            third: WidgetContainer,
+          }}
           queries={{
-            first: { widget: () => Relay.QL`query { widgetByArg(name: $pathName) }` },
-            second: { widget: () => Relay.QL`query { widgetByArg(name: $queryName) }` },
+            first: {
+              widget: () => Relay.QL`query { widgetByArg(name: $pathName) }`,
+            },
+            second: {
+              widget: () => Relay.QL`query { widgetByArg(name: $queryName) }`,
+            },
+            third: {
+              widget: () => Relay.QL`query { widgetByArg(name: $pathName) }`,
+            },
+          }}
+          renderFetched={{
+            third: () => <div className="qux" />,
           }}
           queryParams={['queryName']}
         />
@@ -96,6 +111,10 @@ describe('<RelayRouter>', () => {
 
     it('should support query params', () => {
       ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'baz');
+    });
+
+    it('should support renderFetched', () => {
+      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'qux');
     });
   });
 });
