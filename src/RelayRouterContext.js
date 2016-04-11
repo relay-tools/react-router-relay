@@ -1,6 +1,6 @@
 import React from 'react';
 import Relay from 'react-relay';
-import { RouterContext } from 'react-router';
+import RouterContext from 'rrtr/lib/RouterContext';
 
 import RouteAggregator from './RouteAggregator';
 import RouteContainer from './RouteContainer';
