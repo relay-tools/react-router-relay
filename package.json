@@ -29,9 +29,9 @@
   "homepage": "https://github.com/relay-tools/react-router-relay#readme",
   "dependencies": {
     "babel-runtime": "^5.8.38",
-    "invariant": "^2.2.0",
-    "lodash": "^4.6.1",
-    "react-static-container": "^1.0.0"
+    "invariant": "^2.2.1",
+    "lodash": "^4.10.0",
+    "react-static-container": "^1.0.1"
   },
   "peerDependencies": {
     "react": ">=0.14.0",
@@ -39,37 +39,36 @@
     "rrtr": ">=2.1.2"
   },
   "devDependencies": {
-    "array.prototype.find": "^2.0.0",
     "babel": "^5.8.38",
     "babel-core": "^5.8.38",
     "babel-eslint": "^4.1.8",
     "babel-loader": "^5.4.0",
     "babel-plugin-dev-expression": "^0.1.0",
-    "babel-relay-plugin": "^0.7.3",
+    "babel-relay-plugin": "^0.8.0",
     "chai": "^3.5.0",
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^5.0.1",
     "eslint-plugin-react": "^3.16.1",
-    "graphql": "^0.4.14",
+    "graphql": "^0.4.18",
     "graphql-relay": "^0.3.6",
-    "karma": "^0.13.16",
+    "karma": "^0.13.22",
     "karma-chrome-launcher": "^0.2.3",
     "karma-firefox-launcher": "^0.1.7",
-    "karma-mocha": "^0.2.1",
+    "karma-mocha": "^0.2.2",
     "karma-mocha-reporter": "^2.0.0",
-    "karma-sinon-chai": "^1.1.0",
-    "karma-sourcemap-loader": "^0.3.6",
+    "karma-sinon-chai": "^1.2.0",
+    "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
     "lolex": "^1.4.0",
-    "mocha": "^2.3.4",
-    "react": "^0.14.8",
-    "react-dom": "^0.14.8",
-    "react-relay": "^0.7.3",
+    "mocha": "^2.4.5",
+    "react": "^15.0.1",
+    "react-dom": "^15.0.1",
+    "react-relay": "^0.8.0",
     "relay-local-schema": "^0.3.2",
-    "rimraf": "^2.5.0",
+    "rimraf": "^2.5.2",
     "rrtr": "^2.1.2",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
-    "webpack": "^1.12.9"
+    "webpack": "^1.12.15"
   }
 }
