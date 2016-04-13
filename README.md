@@ -80,6 +80,15 @@ Just like with `Relay.RootContainer`, the component will receive the query resul
 
 If your route doesn't have any dependencies on Relay data, just don't declare `queries`. The only requirement is that any route that does define `queries` must have a Relay container as its component.
 
+If your route's Relay data dependencies are a function of the location or of the parameters, you can define a `getQueries` function on your route that returns the computed queries as a function of the current router state:
+
+```js
+<Route
+  component={Widget}
+  getQueries={({ location, params }) => getWidgetQueries(location, params)}
+/>
+```
+
 #### Path parameters
 
 Any path parameters for routes with queries and their ancestors will be used as parameters on the Relay route:
@@ -172,12 +181,10 @@ const widgetListRoute = (
 For routes with named components, define `queries` as an object with the queries for each component by name:
 
 ```js
-const route = (
-  <Route
-    components={{ foo: FooComponent, bar: BarComponent }}
-    queries={{ foo: FooQueries, bar: BarQueries }}
-  />
-);
+<Route
+  components={{ foo: FooComponent, bar: BarComponent }}
+  queries={{ foo: FooQueries, bar: BarQueries }}
+/>
 ```
 
 ### Render callbacks
@@ -189,6 +196,17 @@ You can pass in custom `renderLoading`, `renderFetched`, and `renderFailure` cal
 ```
 
 These have the same signature and behavior as they do on `Relay.RootContainer`, except that the argument to `renderFetched` also includes the injected props from React Router. As on `Relay.RootContainer`, the `renderLoading` callback can simulate the default behavior of rendering the previous view by returning `undefined`.
+
+When using named components, you can define these on a per-component basis, optionally omitting the callback for components that do not need a custom render callback:
+
+```js
+<Route
+  components={{ foo: FooComponent, bar: BarComponent }}
+  queries={{ foo: FooQueries, bar: BarQueries }}
+  renderLoading={{ foo: renderFooLoading }}
+  renderFetched={renderFetched}
+/>
+```
 
 ### Additional `Relay.RootContainer` configuration
 
