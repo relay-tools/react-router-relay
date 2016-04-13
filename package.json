@@ -64,7 +64,7 @@
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
     "react-relay": "^0.8.0",
-    "relay-local-schema": "^0.3.2",
+    "relay-local-schema": "^0.4.0",
     "rimraf": "^2.5.2",
     "rrtr": "^2.1.2",
     "sinon": "^1.17.3",

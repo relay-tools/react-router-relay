@@ -2,7 +2,8 @@ import invariant from 'invariant';
 import isEqual from 'lodash/isEqual';
 import Relay from 'react-relay';
 
-import getParamsForRoute from './getParamsForRoute';
+import getParamsForRoute from './utils/getParamsForRoute';
+import getRouteQueries from './utils/getRouteQueries';
 
 const DEFAULT_KEY = '@@default';
 
@@ -22,7 +23,9 @@ export default class RouteAggregator {
     this._readyState = null;
   }
 
-  updateRoute({ routes, components, params, location }) {
+  updateRoute(routerProps) {
+    const { routes, components, params, location } = routerProps;
+
     const relayRoute = {
       name: null,
       queries: {},
@@ -31,7 +34,7 @@ export default class RouteAggregator {
     const fragmentSpecs = {};
 
     routes.forEach((route, i) => {
-      const routeQueries = route.queries;
+      const routeQueries = getRouteQueries(route, routerProps);
       if (!routeQueries) {
         return;
       }
