@@ -1,9 +1,7 @@
 # react-router-relay [![Travis][build-badge]][build] [![npm][npm-badge]][npm]
-[Relay](http://facebook.github.io/relay/) integration for [rrtr](https://github.com/taion/rrtr).
+[Relay](http://facebook.github.io/relay/) integration for [React Router](https://github.com/reactjs/react-router).
 
 [![Discord][discord-badge]][discord]
-
-**rrtr**? It's an actively-maintained fork of React Router. More details [here](https://medium.com/@taion/react-router-is-dead-long-live-rrtr-d229ca30e318).
 
 ## Usage
 
@@ -53,7 +51,7 @@ You can find an example implementation of TodoMVC with routing using `react-rout
 ### Installation
 
 ```shell
-$ npm install react react-dom react-relay rrtr
+$ npm install react react-dom react-relay react-router
 $ npm install react-router-relay
 ```
 
