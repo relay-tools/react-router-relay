@@ -1,8 +1,8 @@
 import React from 'react';
 import StaticContainer from 'react-static-container';
 
-import getParamsForRoute from './getParamsForRoute';
 import RouteAggregator from './RouteAggregator';
+import getParamsForRoute from './utils/getParamsForRoute';
 
 export default class RouteContainer extends React.Component {
   static displayName = 'RouteContainer';

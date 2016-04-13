@@ -40,13 +40,15 @@ describe('<RelayRouter>', () => {
       },
     });
 
+    // FIXME: Upgrade dependencies and get rid of this silly pragma.
+    /* eslint-disable react/jsx-no-bind */
     const routes = (
       <Route
         path="/"
         component={WidgetContainer}
-        queries={{
+        getQueries={() => ({
           widget: () => Relay.QL`query { widget }`,
-        }}
+        })}
       >
         <Route
           path=":pathName"
@@ -73,6 +75,7 @@ describe('<RelayRouter>', () => {
         />
       </Route>
     );
+    /* eslint-enable react/jsx-no-bind */
 
     let instance;
 

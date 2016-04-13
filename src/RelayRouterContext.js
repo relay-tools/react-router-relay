@@ -4,6 +4,7 @@ import RouterContext from 'rrtr/lib/RouterContext';
 
 import RouteAggregator from './RouteAggregator';
 import RouteContainer from './RouteContainer';
+import getRouteQueries from './utils/getRouteQueries';
 
 export default class RelayRouterContext extends React.Component {
   static displayName = 'RelayRouterContext';
@@ -47,7 +48,8 @@ export default class RelayRouterContext extends React.Component {
     const { key, route } = props;
     /* eslint-enable react/prop-types */
 
-    const queries = key ? route.queries && route.queries[key] : route.queries;
+    const routeQueries = getRouteQueries(route, props);
+    const queries = key ? routeQueries && routeQueries[key] : routeQueries;
     if (!queries) {
       return this.props.createElement(Component, props);
     }
