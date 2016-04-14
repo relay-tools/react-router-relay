@@ -65,10 +65,10 @@ describe('<RelayRouter>', () => {
               widget: () => Relay.QL`query { widgetByArg(name: $queryName) }`,
             },
             third: {
-              widget: () => Relay.QL`query { widgetByArg(name: $pathName) }`,
+              widget: () => Relay.QL`query { widgetByArg(name: $queryName) }`,
             },
           }}
-          renderFetched={{
+          render={{
             third: () => <div className="qux" />,
           }}
           queryParams={['queryName']}
@@ -115,7 +115,7 @@ describe('<RelayRouter>', () => {
       ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'baz');
     });
 
-    it('should support renderFetched', () => {
+    it('should support render', () => {
       ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'qux');
     });
   });

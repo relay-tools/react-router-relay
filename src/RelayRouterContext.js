@@ -1,7 +1,7 @@
 import React from 'react';
 import Relay from 'react-relay';
+import RelayRenderer from 'react-relay/lib/RelayRenderer.js';
 import RouterContext from 'react-router/lib/RouterContext';
-
 import RouteAggregator from './RouteAggregator';
 import RouteContainer from './RouteContainer';
 import getRouteQueries from './utils/getRouteQueries';
@@ -43,7 +43,7 @@ export default class RelayRouterContext extends React.Component {
     this._routeAggregator.updateRoute(nextProps);
   }
 
-  createElement = (Component, props) => {
+  createElement = (Component, props, relayRenderArgs) => {
     /* eslint-disable react/prop-types */
     const { key, route } = props;
     /* eslint-enable react/prop-types */
@@ -57,6 +57,7 @@ export default class RelayRouterContext extends React.Component {
     return (
       <RouteContainer
         {...props}
+        relayRenderArgs={relayRenderArgs}
         Component={Component}
         createElement={this.props.createElement}
         componentKey={key}
@@ -65,39 +66,37 @@ export default class RelayRouterContext extends React.Component {
     );
   };
 
-  renderFailure = (error, retry) => {
-    this._routeAggregator.setFailure(error, retry);
-    return this.renderComponent();
-  };
+  // relayRenderArgs type:
+  // RelayRenderArgs = {
+  //   done: boolean;
+  //   error: ?Error;
+  //   props: ?({ [propName: string]: mixed });
+  //   retry: ?(() => void);
+  //   stale: boolean;
+  // };
+  renderRelay = (relayRenderArgs) =>
+    this.renderComponent(relayRenderArgs);
 
-  renderFetched = (data, readyState) => {
-    this._routeAggregator.setFetched(data, readyState);
-    return this.renderComponent();
-  };
-
-  renderLoading = () => {
-    this._routeAggregator.setLoading();
-    return this.renderComponent();
-  };
-
-  renderComponent() {
+  renderComponent(relayRenderArgs) {
     return (
       <RouterContext
         {...this.props}
-        createElement={this.createElement}
+        createElement={ // eslint-disable-line react/jsx-no-bind
+          (Component, props) =>
+            this.createElement(Component, props, relayRenderArgs)
+        }
       />
     );
   }
 
   render() {
     return (
-      <Relay.RootContainer
+      <RelayRenderer
         {...this.props}
-        Component={this._routeAggregator}
-        renderFailure={this.renderFailure}
-        renderFetched={this.renderFetched}
-        renderLoading={this.renderLoading}
-        route={this._routeAggregator.route}
+        Container={this._routeAggregator}
+        environment={Relay.Store}
+        render={this.renderRelay}
+        queryConfig={this._routeAggregator.route}
       />
     );
   }
