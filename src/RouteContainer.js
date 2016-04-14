@@ -12,6 +12,7 @@ export default class RouteContainer extends React.Component {
     createElement: React.PropTypes.func.isRequired,
     componentKey: React.PropTypes.string,
     queries: React.PropTypes.object.isRequired,
+    relayRenderArgs: React.PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -21,64 +22,42 @@ export default class RouteContainer extends React.Component {
   render() {
     const {
       Component, createElement, componentKey: key, queries, ...routerProps,
+      relayRenderArgs: { done, error, props, retry, stale },
     } = this.props;
+    // const relayRenderArgs = { done, error, props, retry, stale };
+
     const { route } = routerProps;
     const { routeAggregator } = this.context;
 
     const params = getParamsForRoute(routerProps);
-    const { failure, fragmentPointers, readyState } =
-      routeAggregator.getData(route, key, queries, params);
+    const { fragmentPointers } =
+      routeAggregator.getData(route, key, queries, params, props || {});
 
     let shouldUpdate = true;
-    let element;
 
-    // This is largely copied from RelayRootContainer#render.
-    if (failure) {
-      let { renderFailure } = route;
-      if (renderFailure && typeof renderFailure === 'object') {
-        renderFailure = renderFailure[key];
-      }
+    let { render } = route;
+    if (render && typeof render === 'object') {
+      render = render[key];
+    }
 
-      if (renderFailure) {
-        const [error, retry] = failure;
-        element = renderFailure(error, retry);
-      } else {
-        element = null;
-      }
-    } else if (fragmentPointers) {
-      const data = { key, ...routerProps, ...params, ...fragmentPointers };
+    const data = { key, ...routerProps, ...params, ...fragmentPointers };
+    const localProps = props && data;
 
-      let { renderFetched } = route;
-      if (renderFetched && typeof renderFetched === 'object') {
-        renderFetched = renderFetched[key];
-      }
+    let children;
+    if (render) {
+      children = render({ done, error, props: localProps, data, retry, stale });
+    } else if (localProps) {
+      children = <Component {...localProps} />;
+    }
 
-      if (renderFetched) {
-        element = renderFetched(data, readyState);
-      } else {
-        element = createElement(Component, data);
-      }
-    } else {
-      let { renderLoading } = route;
-      if (renderLoading && typeof renderLoading === 'object') {
-        renderLoading = renderLoading[key];
-      }
-
-      if (renderLoading) {
-        element = renderLoading();
-      } else {
-        element = undefined;
-      }
-
-      if (element === undefined) {
-        element = null;
-        shouldUpdate = false;
-      }
+    if (children === undefined) {
+      children = null;
+      shouldUpdate = false;
     }
 
     return (
       <StaticContainer shouldUpdate={shouldUpdate}>
-        {element}
+        {children}
       </StaticContainer>
     );
   }

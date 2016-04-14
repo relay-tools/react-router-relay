@@ -17,10 +17,6 @@ export default class RouteAggregator {
 
     this.route = null;
     this._fragmentSpecs = null;
-
-    this._failure = null;
-    this._data = {};
-    this._readyState = null;
   }
 
   updateRoute(routerProps) {
@@ -132,26 +128,12 @@ export default class RouteAggregator {
     return `$$_route[${routeIndex}]_${key}_${queryName}`;
   }
 
-  setFailure(error, retry) {
-    this._failure = [error, retry];
-  }
-
-  setFetched(data, readyState) {
-    this._failure = null;
-    this._data = data;
-    this._readyState = readyState;
-  }
-
-  setLoading() {
-    this._failure = null;
-  }
-
-  getData(route, key = DEFAULT_KEY, queries, params) {
+  getData(route, key = DEFAULT_KEY, queries, params, data) {
     // Check that the subset of parameters used for this route match those used
     // for the fetched data.
     for (const paramName of Object.keys(params)) {
-      if (!isEqual(this._data[paramName], params[paramName])) {
-        return this._getDataNotFound();
+      if (!isEqual(data[paramName], params[paramName])) {
+        return {};
       }
     }
 
@@ -159,9 +141,9 @@ export default class RouteAggregator {
     for (const queryName of Object.keys(queries)) {
       const uniqueQueryName = this._getUniqueQueryName(route, key, queryName);
 
-      const fragmentPointer = this._data[uniqueQueryName];
+      const fragmentPointer = data[uniqueQueryName];
       if (!fragmentPointer) {
-        return this._getDataNotFound();
+        return {};
       }
 
       fragmentPointers[queryName] = fragmentPointer;
@@ -169,12 +151,7 @@ export default class RouteAggregator {
 
     return {
       fragmentPointers,
-      readyState: this._readyState,
     };
-  }
-
-  _getDataNotFound() {
-    return { failure: this._failure };
   }
 
   getFragmentNames() {
