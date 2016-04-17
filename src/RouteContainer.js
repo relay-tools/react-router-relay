@@ -1,4 +1,5 @@
 import React from 'react';
+import Relay from 'react-relay';
 import StaticContainer from 'react-static-container';
 
 import RouteAggregator from './RouteAggregator';
@@ -47,6 +48,12 @@ export default class RouteContainer extends React.Component {
       }
     } else if (fragmentPointers) {
       const data = { key, ...routerProps, ...params, ...fragmentPointers };
+
+      if (Relay.isContainer(Component)) {
+        for (const fragmentName of Component.getFragmentNames()) {
+          if (!(fragmentName in data)) data[fragmentName] = null;
+        }
+      }
 
       let { renderFetched } = route;
       if (renderFetched && typeof renderFetched === 'object') {
