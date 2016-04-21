@@ -36,7 +36,7 @@
   "peerDependencies": {
     "react": ">=0.14.0",
     "react-relay": ">=0.6.0",
-    "react-router": ">=2.0.0"
+    "react-router": ">=2.3.0"
   },
   "devDependencies": {
     "babel": "^5.8.38",
@@ -64,7 +64,7 @@
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
     "react-relay": "^0.8.0",
-    "react-router": "^2.1.1",
+    "react-router": "^2.3.0",
     "relay-local-schema": "^0.4.0",
     "rimraf": "^2.5.2",
     "sinon": "^1.17.3",

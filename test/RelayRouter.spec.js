@@ -1,14 +1,16 @@
 import React from 'react';
 import ReactTestUtils from 'react/lib/ReactTestUtils';
 import Relay from 'react-relay';
-import { createMemoryHistory, Route } from 'react-router';
+import {
+  applyRouterMiddleware, createMemoryHistory, Route, Router,
+} from 'react-router';
 import RelayLocalSchema from 'relay-local-schema';
 
-import { RelayRouter } from '../src';
+import useRelay from '../src';
 
 import schema from './fixtures/schema';
 
-describe('<RelayRouter>', () => {
+describe('useRelay', () => {
   beforeEach(() => {
     Relay.injectNetworkLayer(
       new RelayLocalSchema.NetworkLayer({ schema })
@@ -91,9 +93,10 @@ describe('<RelayRouter>', () => {
 
         render() {
           return (
-            <RelayRouter
+            <Router
               history={createMemoryHistory('/bar?queryName=baz')}
               routes={routes}
+              render={applyRouterMiddleware(useRelay)}
               onReadyStateChange={this.onReadyStateChange}
             />
           );
