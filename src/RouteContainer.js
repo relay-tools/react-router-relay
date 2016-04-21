@@ -49,7 +49,7 @@ function RouteContainer(
     }
 
     if (renderFetched) {
-      element = renderFetched(data, readyState);
+      element = renderFetched({ ...routerProps, data }, readyState);
     } else {
       element = React.cloneElement(children, data);
     }
