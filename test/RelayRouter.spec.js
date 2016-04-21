@@ -18,19 +18,33 @@ describe('useRelay', () => {
   });
 
   describe('kitchen sink', () => {
-    class Widget extends React.Component {
-      render() {
-        const { widget, first, second, third } = this.props;
+    const WidgetRoot = ({ widget, first, second, third, route }) => {
+      expect(route).to.be.ok;
 
-        return (
-          <div className={widget.name}>
-            {first}
-            {second}
-            {third}
-          </div>
-        );
-      }
-    }
+      return (
+        <div className={widget.name}>
+          {first}
+          {second}
+          {third}
+        </div>
+      );
+    };
+
+    const WidgetRootContainer = Relay.createContainer(WidgetRoot, {
+      fragments: {
+        widget: () => Relay.QL`
+          fragment on Widget {
+            name,
+          }
+        `,
+      },
+    });
+
+    const Widget = ({ widget, route }) => {
+      expect(route).to.be.ok;
+
+      return <div className={widget.name} />;
+    };
 
     const WidgetContainer = Relay.createContainer(Widget, {
       fragments: {
@@ -47,7 +61,7 @@ describe('useRelay', () => {
     const routes = (
       <Route
         path="/"
-        component={WidgetContainer}
+        component={WidgetRootContainer}
         getQueries={() => ({
           widget: () => Relay.QL`query { widget }`,
         })}
@@ -67,11 +81,15 @@ describe('useRelay', () => {
               widget: () => Relay.QL`query { widgetByArg(name: $queryName) }`,
             },
             third: {
-              widget: () => Relay.QL`query { widgetByArg(name: $pathName) }`,
+              widget: () => Relay.QL`query { widget }`,
             },
           }}
           renderFetched={{
-            third: () => <div className="qux" />,
+            third: ({ route }) => {
+              expect(route).to.be.ok;
+
+              return <div className="qux" />;
+            },
           }}
           queryParams={['queryName']}
         />
