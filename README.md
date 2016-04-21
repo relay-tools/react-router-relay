@@ -5,10 +5,10 @@
 
 ## Usage
 
-Use `<RelayRouter>` or `<RelayRouterContext>` instead of `<Router>` or `<RouterContext>` respectively, then define Relay queries and render callbacks for each of your routes:
+Apply the `useRelay` router middleware, then define Relay queries and render callbacks for each of your routes:
 
 ```js
-import { RelayRouter } from 'react-router-relay';
+import useRelay from 'react-router-relay';
 
 /* ... */
 
@@ -21,7 +21,10 @@ const WidgetQueries = {
 }
 
 ReactDOM.render((
-  <RelayRouter history={history}>
+  <Router
+    history={history}
+    render={applyRouterMiddleware(useRelay)}
+  >
     <Route
       path="/" component={Application}
       queries={ViewerQueries}
@@ -38,7 +41,7 @@ ReactDOM.render((
         queries={WidgetQueries}
       />
     </Route>
-  </RelayRouter>
+  </Router>
 ), container);
 ```
 
@@ -208,11 +211,12 @@ When using named components, you can define these on a per-component basis, opti
 
 ### Additional `Relay.RootContainer` configuration
 
-We pass through additional props on `<RelayRouter>` or `<RelayRouterContext>` are to the underlying `Relay.RootContainer`. You can use this to control props like `forceFetch` on the `Relay.RootContainer`:
+We pass through additional props on `<Router>` or the generated router context to the underlying `Relay.RootContainer`. You can use this to control props like `forceFetch` on the `Relay.RootContainer`:
 
 ```js
-<RelayRouter
+<Router
   history={history} routes={routes}
+  render={applyRouterMiddleware(useRelay)}
   forceFetch={true}
 />
 ```
