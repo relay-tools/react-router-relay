@@ -3,6 +3,7 @@
   "version": "0.12.1",
   "description": "Relay integration for React Router",
   "files": [
+    "es",
     "lib"
   ],
   "main": "lib/index.js",
