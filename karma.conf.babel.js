@@ -22,14 +22,7 @@ export default config => {
     webpack: {
       module: {
         loaders: [
-          {
-            test: /\.js$/,
-            exclude: /node_modules/,
-            loader: 'babel',
-            query: {
-              plugins: ['./test/fixtures/babelRelayPlugin'],
-            },
-          },
+          { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
         ],
       },
       plugins: [
