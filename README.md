@@ -226,6 +226,7 @@ We pass through additional props on `<Router>` or the generated router context t
 - `react-router-relay` only updates the Relay route on actual location changes. Specifically, it will not update the Relay route after changes to location state, so ensure that you update your container variables appropriately when updating location state.
 - `react-router-relay` uses referential equality on route objects to generate unique names for queries. If your `route` objects do not maintain referential equality, then you can specify a globally unique `name` property on the route to identify it.
 - Relay's re-rendering optimizations only work when all non-Relay props are scalar. As the props injected by React Router are objects, they disable these re-rendering optimizations. To take maximum advantage of these optimizations, you should make the `render` methods on your route components as lightweight as possible, and do as much rendering work as possible in child components that only receive scalar and Relay props.
+- Relay implicitly may split query into several http requests, for batching it in single request you should inject [custom RelayNetworkLayer](https://github.com/nodkz/react-relay-network-layer) on the client-side code.
 
 ## Authors
 
