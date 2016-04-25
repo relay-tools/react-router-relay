@@ -11,8 +11,12 @@ import useRelay from '../src';
 import schema from './fixtures/schema';
 
 describe('useRelay', () => {
+  let environment;
+
   beforeEach(() => {
-    Relay.injectNetworkLayer(
+    environment = new Relay.Environment();
+
+    environment.injectNetworkLayer(
       new RelayLocalSchema.NetworkLayer({ schema })
     );
   });
@@ -56,8 +60,6 @@ describe('useRelay', () => {
       },
     });
 
-    // FIXME: Upgrade dependencies and get rid of this silly pragma.
-    /* eslint-disable react/jsx-no-bind */
     const routes = (
       <Route
         path="/"
@@ -84,10 +86,13 @@ describe('useRelay', () => {
               widget: () => Relay.QL`query { widget }`,
             },
           }}
-          renderFetched={{
-            third: ({ route }) => {
-              expect(route).to.be.ok;
+          render={{
+            third: ({ props }) => {
+              if (!props) {
+                return null;
+              }
 
+              expect(props.route).to.be.ok;
               return <div className="qux" />;
             },
           }}
@@ -95,7 +100,6 @@ describe('useRelay', () => {
         />
       </Route>
     );
-    /* eslint-enable react/jsx-no-bind */
 
     let instance;
 
@@ -115,6 +119,7 @@ describe('useRelay', () => {
               history={createMemoryHistory('/bar?queryName=baz')}
               routes={routes}
               render={applyRouterMiddleware(useRelay)}
+              environment={environment}
               onReadyStateChange={this.onReadyStateChange}
             />
           );
