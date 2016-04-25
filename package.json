@@ -10,10 +10,10 @@
   "jsnext:main": "es/index.js",
   "scripts": {
     "build": "npm run build-cjs && npm run build-es",
-    "build-cjs": "rimraf lib && BABEL_ENV=cjs babel src -d lib",
-    "build-es": "rimraf es && BABEL_ENV=es babel src -d es",
+    "build-cjs": "rimraf lib && cross-env BABEL_ENV=cjs babel src -d lib",
+    "build-es": "rimraf es && cross-env BABEL_ENV=es babel src -d es",
     "build-fixtures": "babel-node test/fixtures/updateSchema.js",
-    "karma": "BABEL_ENV=cjs karma start",
+    "karma": "cross-env BABEL_ENV=cjs karma start",
     "lint": "eslint src test *.js",
     "prepublish": "npm run build",
     "test": "npm run lint && npm run build-fixtures && npm run karma"
@@ -60,6 +60,7 @@
     "babel-register": "^6.7.2",
     "babel-relay-plugin": "^0.8.0",
     "chai": "^3.5.0",
+    "cross-env": "^1.0.7",
     "eslint": "^2.8.0",
     "eslint-config-airbnb": "^7.0.0",
     "eslint-plugin-jsx-a11y": "^0.6.2",
