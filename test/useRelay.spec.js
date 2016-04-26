@@ -110,7 +110,7 @@ describe('useRelay', () => {
             path=":pathName" components={components}
             queries={queries}
             render={render}
-            prepareParams={(params, location) => ({
+            prepareParams={(params, { location }) => ({
               ...params,
               queryName: location.query.name,
             })}
