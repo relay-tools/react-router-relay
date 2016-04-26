@@ -2,8 +2,8 @@ import invariant from 'invariant';
 import isEqual from 'lodash/isEqual';
 import Relay from 'react-relay';
 
-import getParamsForRoute from './utils/getParamsForRoute';
 import getRouteQueries from './utils/getRouteQueries';
+import mergeRouteParams from './utils/mergeRouteParams';
 
 const DEFAULT_KEY = '@@default';
 
@@ -25,7 +25,7 @@ export default class QueryAggregator {
   }
 
   updateQueryConfig(routerProps) {
-    const { routes, components, params, location } = routerProps;
+    const { routes, components } = routerProps;
 
     const queryConfig = {
       name: null,
@@ -71,9 +71,9 @@ export default class QueryAggregator {
           component.displayName || component.name
         );
 
-        const routeParams =
-          getParamsForRoute({ route, routes, params, location });
-        Object.assign(queryConfig.params, routeParams);
+        queryConfig.params = mergeRouteParams(
+          queryConfig.params, route, routerProps
+        );
 
         Object.keys(queries).forEach(queryName => {
           const query = queries[queryName];
@@ -89,9 +89,15 @@ export default class QueryAggregator {
             // routes.
             wrappedQuery = () => query();
           } else {
-            // We just need the query function to have > 0 arguments.
+            // When not using the shorthand, we can control the injected
+            // params, so restrict them to just the ones for the current route
+            // and its ancestors.
+            const paramsForRoute = queryConfig.params;
+
+            // We need the query function to have > 0 arguments to hit the code
+            // path for non-shorthand queries.
             /* eslint-disable no-unused-vars */
-            wrappedQuery = _ => query(component, routeParams);
+            wrappedQuery = _ => query(component, paramsForRoute);
             /* eslint-enable */
           }
 

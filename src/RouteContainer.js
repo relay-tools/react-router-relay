@@ -1,7 +1,7 @@
 import React from 'react';
 import StaticContainer from 'react-static-container';
 
-import getParamsForRoute from './utils/getParamsForRoute';
+import mergeRouteParams from './utils/mergeRouteParams';
 
 const propTypes = {
   queries: React.PropTypes.object.isRequired,
@@ -17,9 +17,17 @@ function RouteContainer(
   { queries, routerProps, children, ...extraProps },
   { queryAggregator }
 ) {
-  const { key, route } = routerProps;
+  const { key, route, routes } = routerProps;
 
-  const params = getParamsForRoute(routerProps);
+  let params = {};
+  for (const ancestorRoute of routes) {
+    params = mergeRouteParams(params, ancestorRoute, routerProps);
+
+    if (ancestorRoute === route) {
+      break;
+    }
+  }
+
   const renderArgs =
     queryAggregator.getRenderArgs(route, key, queries, params);
 
