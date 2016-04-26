@@ -1,7 +1,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import RouteAggregator from './RouteAggregator';
+import QueryAggregator from './QueryAggregator';
 
 export default class RelayRouterContext extends React.Component {
   static propTypes = {
@@ -10,19 +10,18 @@ export default class RelayRouterContext extends React.Component {
   };
 
   static childContextTypes = {
-    routeAggregator: React.PropTypes.instanceOf(RouteAggregator).isRequired,
+    queryAggregator: React.PropTypes.object.isRequired,
   };
 
   constructor(props, context) {
     super(props, context);
 
-    this._routeAggregator = new RouteAggregator();
-    this._routeAggregator.updateRoute(props);
+    this.queryAggregator = new QueryAggregator(props);
   }
 
   getChildContext() {
     return {
-      routeAggregator: this._routeAggregator,
+      queryAggregator: this.queryAggregator,
     };
   }
 
@@ -31,33 +30,21 @@ export default class RelayRouterContext extends React.Component {
       return;
     }
 
-    this._routeAggregator.updateRoute(nextProps);
+    this.queryAggregator.updateQueryConfig(nextProps);
   }
 
-  renderFailure = (error, retry) => {
-    this._routeAggregator.setFailure(error, retry);
-    return this.props.children;
-  };
-
-  renderFetched = (data, readyState) => {
-    this._routeAggregator.setFetched(data, readyState);
-    return this.props.children;
-  };
-
-  renderLoading = () => {
-    this._routeAggregator.setLoading();
+  renderCallback = (renderArgs) => {
+    this.queryAggregator.setRenderArgs(renderArgs);
     return this.props.children;
   };
 
   render() {
     return (
-      <Relay.RootContainer
+      <Relay.Renderer
         {...this.props}
-        Component={this._routeAggregator}
-        renderFailure={this.renderFailure}
-        renderFetched={this.renderFetched}
-        renderLoading={this.renderLoading}
-        route={this._routeAggregator.route}
+        Container={this.queryAggregator}
+        render={this.renderCallback}
+        queryConfig={this.queryAggregator.queryConfig}
       />
     );
   }

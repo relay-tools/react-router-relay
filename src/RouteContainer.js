@@ -1,7 +1,6 @@
 import React from 'react';
 import StaticContainer from 'react-static-container';
 
-import RouteAggregator from './RouteAggregator';
 import getParamsForRoute from './utils/getParamsForRoute';
 
 const propTypes = {
@@ -11,64 +10,46 @@ const propTypes = {
 };
 
 const contextTypes = {
-  routeAggregator: React.PropTypes.instanceOf(RouteAggregator).isRequired,
+  queryAggregator: React.PropTypes.object.isRequired,
 };
 
 function RouteContainer(
-  { queries, routerProps, children, ...props },
-  { routeAggregator }
+  { queries, routerProps, children, ...extraProps },
+  { queryAggregator }
 ) {
   const { key, route } = routerProps;
 
   const params = getParamsForRoute(routerProps);
-  const { failure, fragmentPointers, readyState } =
-    routeAggregator.getData(route, key, queries, params);
+  const renderArgs =
+    queryAggregator.getRenderArgs(route, key, queries, params);
 
-  let shouldUpdate = true;
+  const relayProps = renderArgs.props;
+  const props = relayProps && { ...extraProps, ...params, ...relayProps };
+
+  let { render } = route;
+  if (render && typeof render === 'object') {
+    render = render[key];
+  }
+
+  // The below is largely copied from RelayReadyStateRenderer.
+
   let element;
+  if (render) {
+    element = render({
+      ...renderArgs,
+      props: { ...routerProps, ...props },
+    });
+  } else if (props) {
+    // The child already has routerProps, so just inject the additional props.
+    element = React.cloneElement(children, props);
+  }
 
-  // This is largely copied from RelayRootContainer#render.
-  if (failure) {
-    let { renderFailure } = route;
-    if (renderFailure && typeof renderFailure === 'object') {
-      renderFailure = renderFailure[key];
-    }
-
-    if (renderFailure) {
-      const [error, retry] = failure;
-      element = renderFailure(error, retry);
-    } else {
-      element = null;
-    }
-  } else if (fragmentPointers) {
-    const data = { ...props, ...params, ...fragmentPointers };
-
-    let { renderFetched } = route;
-    if (renderFetched && typeof renderFetched === 'object') {
-      renderFetched = renderFetched[key];
-    }
-
-    if (renderFetched) {
-      element = renderFetched({ ...routerProps, data }, readyState);
-    } else {
-      element = React.cloneElement(children, data);
-    }
+  let shouldUpdate;
+  if (element === undefined) {
+    element = null;
+    shouldUpdate = false;
   } else {
-    let { renderLoading } = route;
-    if (renderLoading && typeof renderLoading === 'object') {
-      renderLoading = renderLoading[key];
-    }
-
-    if (renderLoading) {
-      element = renderLoading();
-    } else {
-      element = undefined;
-    }
-
-    if (element === undefined) {
-      element = null;
-      shouldUpdate = false;
-    }
+    shouldUpdate = true;
   }
 
   return (
