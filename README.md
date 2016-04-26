@@ -149,7 +149,7 @@ const widgetRoute = (
 
 If your queries require additional parameters from the location, such as from the location query or state, you can add those parameters with `prepareParams`. You can also use `prepareParams` to do additional conversion or initialization of your parameters.
 
-The `prepareParams` method has the same signature and behavior as `prepareParams` on a Relay query config, except that it also receives the current location as an argument.
+The `prepareParams` method has the same signature and behavior as `prepareParams` on a Relay query config, except that it also receives the current router state as an argument.
 
 Additionally, you can use route parameters as variables on your containers:
 
@@ -176,7 +176,7 @@ const WidgetList = Relay.createContainer(/* ... */, {
   }
 });
 
-function prepareWidgetListParams(params, location) {
+function prepareWidgetListParams(params, { location }) {
   const { color, size } = location.query;
   const limit = location.state && location.state.limit;
 
