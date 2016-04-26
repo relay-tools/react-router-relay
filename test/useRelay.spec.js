@@ -61,55 +61,61 @@ describe('useRelay', () => {
       },
     });
 
-    const routes = (
-      <Route
-        path="/:parentName"
-        component={WidgetRootContainer}
-        getQueries={() => ({
-          widget: () => Relay.QL`query { widget }`,
-        })}
-        prepareParams={({ parentName, ...params }) => ({
-          ...params,
-          parentName: `${parentName}-`,
-        })}
-      >
-        <Route
-          path=":pathName"
-          components={{
-            first: WidgetContainer,
-            second: WidgetContainer,
-            third: WidgetContainer,
-            fourth: WidgetContainer,
-          }}
-          queries={{
-            first: {
-              widget: () => Relay.QL`query { widgetByArg(name: $pathName) }`,
-            },
-            second: {
-              widget: () => Relay.QL`query { widgetByArg(name: $queryName) }`,
-            },
-            third: {
-              widget: () => Relay.QL`query { widget }`,
-            },
-            fourth: {
-              widget: () => Relay.QL`query { widgetByArg(name: $parentName) }`,
-            },
-          }}
-          render={{
-            third: ({ props }) => {
-              if (!props) {
-                return null;
-              }
+    const components = {
+      first: WidgetContainer,
+      second: WidgetContainer,
+      third: WidgetContainer,
+      fourth: WidgetContainer,
+    };
 
-              expect(props.route).to.be.ok;
-              return <div className="qux" />;
-            },
-          }}
-          prepareParams={(params, location) => ({
-            ...params,
-            queryName: location.query.name,
+    const queries = {
+      first: {
+        widget: () => Relay.QL`query { widgetByArg(name: $pathName) }`,
+      },
+      second: {
+        widget: () => Relay.QL`query { widgetByArg(name: $queryName) }`,
+      },
+      third: {
+        widget: () => Relay.QL`query { widget }`,
+      },
+      fourth: {
+        widget: () => Relay.QL`query { widgetByArg(name: $parentName) }`,
+      },
+    };
+
+    const render = {
+      third: ({ props }) => {
+        if (!props) {
+          return null;
+        }
+
+        expect(props.route).to.be.ok;
+        return <div className="qux" />;
+      },
+    };
+
+    const routes = (
+      <Route path="/:parentName">
+        <Route
+          component={WidgetRootContainer}
+          getQueries={() => ({
+            widget: () => Relay.QL`query { widget }`,
           })}
-        />
+          prepareParams={({ parentName, ...params }) => ({
+            ...params,
+            parentName: `${parentName}-`,
+          })}
+        >
+          <Route
+            path=":pathName" components={components}
+            queries={queries}
+            render={render}
+            prepareParams={(params, location) => ({
+              ...params,
+              queryName: location.query.name,
+            })}
+          />
+        </Route>
       </Route>
     );
 

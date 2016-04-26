@@ -35,6 +35,12 @@ export default class QueryAggregator {
     const fragmentSpecs = {};
 
     routes.forEach((route, i) => {
+      // We need to merge in the route params regardless of whether the route
+      // actually has queries, in case its children depend on its path params.
+      queryConfig.params = mergeRouteParams(
+        queryConfig.params, route, routerProps
+      );
+
       const routeQueries = getRouteQueries(route, routerProps);
       if (!routeQueries) {
         return;
@@ -69,10 +75,6 @@ export default class QueryAggregator {
           'relay-router-relay: Route with queries specifies component `%s` ' +
           'that is not a Relay container.',
           component.displayName || component.name
-        );
-
-        queryConfig.params = mergeRouteParams(
-          queryConfig.params, route, routerProps
         );
 
         Object.keys(queries).forEach(queryName => {
