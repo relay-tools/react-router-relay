@@ -5,7 +5,7 @@
 
 ## Usage
 
-Apply the `useRelay` router middleware, then define Relay queries and render callbacks for each of your routes:
+Apply the `useRelay` router middleware, pass in a Relay environment to `<Router>`, then define Relay queries and render callbacks for each of your routes:
 
 ```js
 import useRelay from 'react-router-relay';
@@ -20,10 +20,11 @@ const WidgetQueries = {
   widget: () => Relay.QL`query { widget(widgetId: $widgetId) }`
 }
 
-ReactDOM.render((
+ReactDOM.render(
   <Router
     history={history}
     render={applyRouterMiddleware(useRelay)}
+    environment={Relay.Store}
   >
     <Route
       path="/" component={Application}
@@ -42,8 +43,9 @@ ReactDOM.render((
         />
       </Route>
     </Route>
-  </Router>
-), container);
+  </Router>,
+  container
+);
 ```
 
 `react-router-relay` will automatically generate a combined Relay query config with all queries and parameters from the active React Router routes, then pass down the query results to each of the route components. As the queries are all gathered onto a single query config, they'll all be fetched in parallel, and the data for your entire page will load and then render in one go.
@@ -57,6 +59,26 @@ You can find an example implementation of TodoMVC with routing using `react-rout
 ```shell
 $ npm install react react-dom react-relay react-router
 $ npm install react-router-relay
+```
+
+### Router configuration
+
+Apply the `useRelay` router middleware, and pass in a Relay environment to the `<Router>`:
+
+```js
+import useRelay from 'react-router-relay';
+
+/* ... */
+
+ReactDOM.render(
+  <Router
+    history={history}
+    routes={routes}
+    render={applyRouterMiddleware(useRelay)}
+    environment={Relay.Store}
+  />,
+  container
+);
 ```
 
 ### Routes and queries
@@ -187,7 +209,7 @@ For routes with named components, define `queries` as an object with the queries
 />
 ```
 
-### Render callback
+#### Render callback
 
 You can pass in a custom `render` callback to your routes:
 
@@ -219,9 +241,11 @@ We pass through additional props on `<Router>` or the generated router context t
 
 ```js
 <Router
-  history={history} routes={routes}
+  history={history}
+  routes={routes}
   render={applyRouterMiddleware(useRelay)}
   forceFetch={true}
+  environment={Relay.Store}
 />
 ```
 
