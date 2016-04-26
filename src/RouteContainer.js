@@ -43,7 +43,7 @@ function RouteContainer(
 
   let element;
   if (render) {
-    element = render({
+    element = render.call(route, {
       ...renderArgs,
       props: { ...routerProps, ...props },
     });
