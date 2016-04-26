@@ -6,10 +6,9 @@ export default function mergeRouteParams(prevParams, route, routerProps) {
     ...getRouteParams(route, routerProps.params),
   };
 
-  const { prepareParams } = route;
-  if (!prepareParams) {
+  if (!route.prepareParams) {
     return params;
   }
 
-  return prepareParams(params, routerProps.location);
+  return route.prepareParams(params, routerProps.location);
 }
