@@ -5,7 +5,7 @@
 
 ## Usage
 
-Apply the `useRelay` router middleware, then define Relay queries and render callbacks for each of your routes:
+Apply the `useRelay` router middleware, pass in a Relay environment to `<Router>`, then define Relay queries and render callbacks for each of your routes:
 
 ```js
 import useRelay from 'react-router-relay';
@@ -20,10 +20,11 @@ const WidgetQueries = {
   widget: () => Relay.QL`query { widget(widgetId: $widgetId) }`
 }
 
-ReactDOM.render((
+ReactDOM.render(
   <Router
     history={history}
     render={applyRouterMiddleware(useRelay)}
+    environment={Relay.Store}
   >
     <Route
       path="/" component={Application}
@@ -42,8 +43,9 @@ ReactDOM.render((
         />
       </Route>
     </Route>
-  </Router>
-), container);
+  </Router>,
+  container
+);
 ```
 
 `react-router-relay` will automatically generate a combined Relay query config with all queries and parameters from the active React Router routes, then pass down the query results to each of the route components. As the queries are all gathered onto a single query config, they'll all be fetched in parallel, and the data for your entire page will load and then render in one go.
@@ -57,6 +59,26 @@ You can find an example implementation of TodoMVC with routing using `react-rout
 ```shell
 $ npm install react react-dom react-relay react-router
 $ npm install react-router-relay
+```
+
+### Router configuration
+
+Apply the `useRelay` router middleware, and pass in a Relay environment to the `<Router>`:
+
+```js
+import useRelay from 'react-router-relay';
+
+/* ... */
+
+ReactDOM.render(
+  <Router
+    history={history}
+    routes={routes}
+    render={applyRouterMiddleware(useRelay)}
+    environment={Relay.Store}
+  />,
+  container
+);
 ```
 
 ### Routes and queries
@@ -187,7 +209,7 @@ For routes with named components, define `queries` as an object with the queries
 />
 ```
 
-### Render callback
+#### Render callback
 
 You can pass in a custom `render` callback to your routes:
 
@@ -219,14 +241,17 @@ We pass through additional props on `<Router>` or the generated router context t
 
 ```js
 <Router
-  history={history} routes={routes}
+  history={history}
+  routes={routes}
   render={applyRouterMiddleware(useRelay)}
   forceFetch={true}
+  environment={Relay.Store}
 />
 ```
 
 ### Notes
 
+- The default Relay network layer executes each query as a separate request. If you want to execute all of your queries in a single request, then you will need to use a custom network layer that can send multiple queries in the same request, along with a GraphQL server that can execute multiple queries from a single request.
 - `react-router-relay` only updates the Relay query config on actual location changes. Specifically, it will not update the Relay query config after changes to location state, so ensure that you update your container variables appropriately when updating location state.
 - `react-router-relay` uses referential equality on route objects to generate unique names for queries. If your `route` objects do not maintain referential equality, then you can specify a globally unique `name` property on the route to identify it.
 - Relay's re-rendering optimizations only work when all non-Relay props are scalar. As the props injected by React Router are objects, they disable these re-rendering optimizations. To take maximum advantage of these optimizations, you should make the `render` methods on your route components as lightweight as possible, and do as much rendering work as possible in child components that only receive scalar and Relay props.
