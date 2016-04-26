@@ -22,7 +22,7 @@ describe('useRelay', () => {
   });
 
   describe('kitchen sink', () => {
-    const WidgetRoot = ({ widget, first, second, third, route }) => {
+    const WidgetRoot = ({ widget, first, second, third, fourth, route }) => {
       expect(route).to.be.ok;
 
       return (
@@ -30,6 +30,7 @@ describe('useRelay', () => {
           {first}
           {second}
           {third}
+          {fourth}
         </div>
       );
     };
@@ -62,10 +63,14 @@ describe('useRelay', () => {
 
     const routes = (
       <Route
-        path="/"
+        path="/:parentName"
         component={WidgetRootContainer}
         getQueries={() => ({
           widget: () => Relay.QL`query { widget }`,
+        })}
+        prepareParams={({ parentName, ...params }) => ({
+          ...params,
+          parentName: `${parentName}-`,
         })}
       >
         <Route
@@ -74,6 +79,7 @@ describe('useRelay', () => {
             first: WidgetContainer,
             second: WidgetContainer,
             third: WidgetContainer,
+            fourth: WidgetContainer,
           }}
           queries={{
             first: {
@@ -84,6 +90,9 @@ describe('useRelay', () => {
             },
             third: {
               widget: () => Relay.QL`query { widget }`,
+            },
+            fourth: {
+              widget: () => Relay.QL`query { widgetByArg(name: $parentName) }`,
             },
           }}
           render={{
@@ -96,7 +105,10 @@ describe('useRelay', () => {
               return <div className="qux" />;
             },
           }}
-          queryParams={['queryName']}
+          prepareParams={(params, location) => ({
+            ...params,
+            queryName: location.query.name,
+          })}
         />
       </Route>
     );
@@ -116,7 +128,7 @@ describe('useRelay', () => {
         render() {
           return (
             <Router
-              history={createMemoryHistory('/bar?queryName=baz')}
+              history={createMemoryHistory('/parent/bar?name=baz')}
               routes={routes}
               render={applyRouterMiddleware(useRelay)}
               environment={environment}
@@ -137,12 +149,16 @@ describe('useRelay', () => {
       ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'bar');
     });
 
-    it('should support query params', () => {
+    it('should support prepared params', () => {
       ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'baz');
     });
 
     it('should support renderFetched', () => {
       ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'qux');
+    });
+
+    it('should support modified parent params', () => {
+      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'parent-');
     });
   });
 });

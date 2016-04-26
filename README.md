@@ -33,7 +33,6 @@ ReactDOM.render((
         <IndexRoute
           component={WidgetList}
           queries={ViewerQueries}
-          queryParams={['color']} stateParams={['limit']}
           prepareParams={prepareWidgetListParams}
         />
         <Route
@@ -105,9 +104,7 @@ const WidgetQueries = {
   `
 }
 
-class Widget extends React.Component { /* ... */ }
-
-Widget = Relay.createContainer(Widget, {
+const Widget = Relay.createContainer(/* ... */, {
   fragments: {
     widget: () => Relay.QL`
       fragment on Widget {
@@ -128,16 +125,14 @@ const widgetRoute = (
 
 #### Additional parameters
 
-If your query requires parameters from the location query or state, you can specify them respectively on the `queryParams` or `stateParams` props on the `<Route>`. URL and query parameters will be strings, while missing query and state parameters will be `null`.
+If your queries require additional parameters from the location, such as from the location query or state, you can add those parameters with `prepareParams`. You can also use `prepareParams` to do additional conversion or initialization of your parameters.
 
-If you need to convert or initialize these parameters, you can do so with `prepareParams`, which has the same signature and behavior as `prepareVariables` on a Relay container, except that it also receives the React Router route object as an argument.
+The `prepareParams` method has the same signature and behavior as `prepareParams` on a Relay query config, except that it also receives the current location as an argument.
 
 Additionally, you can use route parameters as variables on your containers:
 
 ```js
-class WidgetList extends React.Component { /* ... */ }
-
-WidgetList = Relay.createContainer(WidgetList, {
+const WidgetList = Relay.createContainer(/* ... */, {
   initialVariables: {
     color: null,
     size: null,
@@ -150,20 +145,24 @@ WidgetList = Relay.createContainer(WidgetList, {
         widgets(color: $color, size: $size, first: $limit) {
           edges {
             node {
-              name
-            }
-          }
-        }
+              name,
+            },
+          },
+        },
       }
     `
   }
 });
 
-function prepareWidgetListParams(params, route) {
+function prepareWidgetListParams(params, location) {
+  const { color, size } = location.query;
+  const limit = location.state && location.state.limit;
+
   return {
     ...params,
-    size: params.size ? parseInt(params.size, 10) : null,
-    limit: params.limit || route.defaultLimit
+    color,
+    size: size && parseInt(size, 10),
+    limit: limit || 10,
   };
 };
 
@@ -172,9 +171,7 @@ const widgetListRoute = (
   <Route
     path="widgets" component={WidgetList}
     queries={ViewerQueries}
-    queryParams={['color', 'size']} stateParams={['limit']}
     prepareParams={prepareWidgetListParams}
-    defaultLimit={10}
   />
 );
 ```
