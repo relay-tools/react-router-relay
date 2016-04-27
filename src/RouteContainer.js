@@ -31,8 +31,7 @@ function RouteContainer(
   const renderArgs =
     queryAggregator.getRenderArgs(route, key, queries, params);
 
-  const relayProps = renderArgs.props;
-  const props = relayProps && { ...extraProps, ...params, ...relayProps };
+  const { props } = renderArgs;
 
   let { render } = route;
   if (render && typeof render === 'object') {
@@ -45,11 +44,24 @@ function RouteContainer(
   if (render) {
     element = render.call(route, {
       ...renderArgs,
-      props: { ...routerProps, ...props },
+      props: props && {
+        ...routerProps,
+        ...extraProps,
+        ...params,
+        ...props,
+      },
+      routerProps: {
+        ...routerProps,
+        ...extraProps,
+      },
     });
   } else if (props) {
     // The child already has routerProps, so just inject the additional props.
-    element = React.cloneElement(children, props);
+    element = React.cloneElement(children, {
+      ...extraProps,
+      ...params,
+      ...props,
+    });
   }
 
   let shouldUpdate;

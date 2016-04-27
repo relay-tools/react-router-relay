@@ -3,7 +3,8 @@
     "mocha": true
   },
   "globals": {
-    "expect": true
+    "expect": false,
+    "sinon": false
   },
   "rules": {
     "no-unused-expressions": 0,

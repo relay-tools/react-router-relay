@@ -15,16 +15,17 @@ describe('useRelay', () => {
 
   beforeEach(() => {
     environment = new Relay.Environment();
-
     environment.injectNetworkLayer(
       new RelayLocalSchema.NetworkLayer({ schema })
     );
   });
 
   describe('kitchen sink', () => {
-    const WidgetRoot = ({ widget, first, second, third, fourth, route }) => {
-      expect(route).to.be.ok;
+    function Root({ children }) {
+      return React.cloneElement(children, { extraProp: 3 });
+    }
 
+    function WidgetParent({ widget, first, second, third, fourth }) {
       return (
         <div className={widget.name}>
           {first}
@@ -33,9 +34,9 @@ describe('useRelay', () => {
           {fourth}
         </div>
       );
-    };
+    }
 
-    const WidgetRootContainer = Relay.createContainer(WidgetRoot, {
+    const WidgetParentContainer = Relay.createContainer(WidgetParent, {
       fragments: {
         widget: () => Relay.QL`
           fragment on Widget {
@@ -45,11 +46,13 @@ describe('useRelay', () => {
       },
     });
 
-    const Widget = ({ widget, route }) => {
+    function Widget({ widget, route }) {
       expect(route).to.be.ok;
 
-      return <div className={widget.name} />;
-    };
+      return (
+        <div className={widget.name} />
+      );
+    }
 
     const WidgetContainer = Relay.createContainer(Widget, {
       fragments: {
@@ -84,44 +87,46 @@ describe('useRelay', () => {
     };
 
     const render = {
-      third: ({ props }) => {
-        if (!props) {
-          return null;
-        }
-
-        expect(props.route).to.be.ok;
-        return <div className="qux" />;
-      },
+      third: () => <div className="qux" />,
     };
 
-    const routes = (
-      <Route path="/:parentName">
-        <Route
-          component={WidgetRootContainer}
-          getQueries={() => ({
-            widget: () => Relay.QL`query { widget }`,
-          })}
-          prepareParams={({ parentName, ...params }) => ({
-            ...params,
-            parentName: `${parentName}-`,
-          })}
-        >
-          <Route
-            path=":pathName" components={components}
-            queries={queries}
-            render={render}
-            prepareParams={(params, { location }) => ({
-              ...params,
-              queryName: location.query.name,
-            })}
-          />
-        </Route>
-      </Route>
-    );
-
+    let renderSpy;
     let instance;
 
     beforeEach(done => {
+      // This is declared on the parent route to capture the loading lifecycle,
+      // because we don't render the child routes until the parent route is
+      // ready.
+      renderSpy = sinon.spy(({ props }) => (
+        props && <WidgetParentContainer {...props} />
+      ));
+
+      const routes = (
+        <Route path="/:parentName" component={Root}>
+          <Route
+            component={WidgetParentContainer}
+            getQueries={() => ({
+              widget: () => Relay.QL`query { widget }`,
+            })}
+            render={renderSpy}
+            prepareParams={({ parentName, ...params }) => ({
+              ...params,
+              parentName: `${parentName}-`,
+            })}
+          >
+            <Route
+              path=":pathName" components={components}
+              queries={queries}
+              render={render}
+              prepareParams={(params, { location }) => ({
+                ...params,
+                queryName: location.query.name,
+              })}
+            />
+          </Route>
+        </Route>
+      );
+
       class Component extends React.Component {
         onReadyStateChange(readyState) {
           if (!readyState.done) {
@@ -147,24 +152,75 @@ describe('useRelay', () => {
       instance = ReactTestUtils.renderIntoDocument(<Component />);
     });
 
-    it('should support basic use', () => {
-      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'foo');
+    describe('rendered components', () => {
+      [
+        ['basic use', 'foo'],
+        ['path params', 'bar'],
+        ['prepared params', 'baz'],
+        ['render method', 'qux'],
+        ['modified parent params', 'parent-'],
+      ].forEach(([condition, className]) => {
+        it(`should support ${condition}`, () => {
+          ReactTestUtils.findRenderedDOMComponentWithClass(
+            instance, className
+          );
+        });
+      });
     });
 
-    it('should support path params', () => {
-      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'bar');
-    });
+    describe('render arguments', () => {
+      describe('before data are ready', () => {
+        let renderArgs;
 
-    it('should support prepared params', () => {
-      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'baz');
-    });
+        beforeEach(() => {
+          renderArgs = renderSpy.firstCall.args[0];
+        });
 
-    it('should support renderFetched', () => {
-      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'qux');
-    });
+        it('should not have Relay props', () => {
+          expect(renderArgs.props).to.not.exist;
+        });
 
-    it('should support modified parent params', () => {
-      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'parent-');
+        it('should have the correct ready state', () => {
+          expect(renderArgs.done).to.not.be.ok;
+        });
+
+        it('should have router props', () => {
+          expect(renderArgs.routerProps).to.exist;
+          expect(renderArgs.routerProps.route).to.exist;
+        });
+
+        it('should support injected props', () => {
+          expect(renderArgs.routerProps.extraProp).to.equal(3);
+        });
+      });
+
+      describe('after data are ready', () => {
+        let renderArgs;
+
+        beforeEach(() => {
+          renderArgs = renderSpy.lastCall.args[0];
+        });
+
+        it('should have Relay props', () => {
+          expect(renderArgs.props).to.exist;
+          expect(renderArgs.props.widget).to.exist;
+        });
+
+        it('should have the correct ready state', () => {
+          expect(renderArgs.done).to.be.ok;
+        });
+
+        it('should have router props', () => {
+          expect(renderArgs.props.route).to.exist;
+          expect(renderArgs.routerProps).to.exist;
+          expect(renderArgs.routerProps.route).to.exist;
+        });
+
+        it('should support injected props', () => {
+          expect(renderArgs.props.extraProp).to.equal(3);
+          expect(renderArgs.routerProps.extraProp).to.equal(3);
+        });
+      });
     });
   });
 });
