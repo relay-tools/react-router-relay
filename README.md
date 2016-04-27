@@ -223,9 +223,9 @@ You can pass in a custom `render` callback to your routes:
 
 This has the same signature as the `render` callback on `Relay.Renderer`, except that, when present, `props` will also include the injected props from React Router. As on `Relay.Renderer`, you can return `undefined` to continuing rendering the last view rendered.
 
-While transitioning, the ready state properties will reflect the ready state of the transition as a whole. However, the `props` object in the `render` callback for a route will be populated as long as the data for that particular route are ready. For example, if a transition does not change the params to the queries for a parent route, the `render` callback for that route will have `props`, even while `ready` is still `false`.
+While transitioning, the ready state properties (`done`, `error`, `retry`, `stale`) will reflect the ready state of the transition as a whole. However, the `props` object in the `render` callback for a route will be populated as long as the data for that particular route are ready. For example, if a transition does not change the params to the queries for a parent route, the `render` callback for that route will have `props`, even while `done` is still `false`.
 
-The argument object to the render callback also includes an additional `routerProps` property, which contains the props from the router. Unlike `props`, `renderProps` will be populated regardless of the Relay ready state. This can be used to render child routes while the data for the parent route is still loading, or to otherwise use information from the router to control rendering before the Relay data are available.
+The argument object to the render callback also includes an additional `routerProps` property, which contains the props from the router. Unlike `props`, `routerProps` will be populated regardless of the Relay ready state. This can be used to render child routes while the data for the parent route is still loading, or to otherwise use information from the router to control rendering before the Relay data is available.
 
 When using named components, you can define these on a per-component basis, optionally omitting the callback for components that do not need a custom render callback:
 
