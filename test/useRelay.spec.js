@@ -177,7 +177,7 @@ describe('useRelay', () => {
         });
 
         it('should not have Relay props', () => {
-          expect(renderArgs.props).to.not.exist;
+          expect(renderArgs.props).to.equal(null);
         });
 
         it('should have the correct ready state', () => {
