@@ -149,12 +149,19 @@ export default class QueryAggregator {
     this.readyState = readyState;
   }
 
-  getRenderArgs(route, key = DEFAULT_KEY, queries, params) {
+  getRenderArgs(route, key, queries, params) {
+    return {
+      ...this.readyState,
+      props: this.getProps(route, key, queries, params),
+    };
+  }
+
+  getProps(route, key = DEFAULT_KEY, queries, params) {
     // Check that the subset of parameters used for this route match those used
     // for the fetched data.
     for (const paramName of Object.keys(params)) {
       if (!isEqual(this.props[paramName], params[paramName])) {
-        return this.readyState;
+        return null;
       }
     }
 
@@ -164,7 +171,7 @@ export default class QueryAggregator {
 
       const value = this.props[uniqueQueryName];
       if (!value) {
-        return this.readyState;
+        return null;
       }
 
       props[queryName] = value;
@@ -173,10 +180,7 @@ export default class QueryAggregator {
     // Only return the props for the route if the query config params match and
     // all requested props are available. Otherwise, by assumption, the ready
     // state will have the correct "not ready" state.
-    return {
-      props,
-      ...this.readyState,
-    };
+    return props;
   }
 
   // The below methods are required to satisfy the Relay container contract.
