@@ -57,7 +57,7 @@ You can find an example implementation of TodoMVC with routing using `react-rout
 ### Installation
 
 ```shell
-$ npm install react react-dom react-relay react-router
+$ npm install react react-dom react-relay react-router react-router-apply-middleware
 $ npm install react-router-relay
 ```
 
