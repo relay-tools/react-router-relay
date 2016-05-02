@@ -4,6 +4,6 @@
     { "plugins": ["./fixtures/babelRelayPlugin"] },
     "react",
     "es2015-loose",
-    "stage-0"
+    "stage-1"
   ]
 }
