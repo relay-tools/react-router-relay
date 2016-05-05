@@ -54,6 +54,7 @@ function RouteContainer(
         ...routerProps,
         ...extraProps,
       },
+      element: children,
     });
   } else if (props) {
     // The child already has routerProps, so just inject the additional props.

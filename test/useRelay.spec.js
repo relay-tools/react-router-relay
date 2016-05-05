@@ -187,6 +187,8 @@ describe('useRelay', () => {
         it('should have router props', () => {
           expect(renderArgs.routerProps).to.exist;
           expect(renderArgs.routerProps.route).to.exist;
+          expect(renderArgs.element).to.exist;
+          expect(renderArgs.element.type).to.equal(WidgetParentContainer);
         });
 
         it('should support injected props', () => {
@@ -214,6 +216,8 @@ describe('useRelay', () => {
           expect(renderArgs.props.route).to.exist;
           expect(renderArgs.routerProps).to.exist;
           expect(renderArgs.routerProps.route).to.exist;
+          expect(renderArgs.element).to.exist;
+          expect(renderArgs.element.type).to.equal(WidgetParentContainer);
         });
 
         it('should support injected props', () => {

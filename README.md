@@ -225,7 +225,17 @@ This has the same signature as the `render` callback on `Relay.Renderer`, except
 
 While transitioning, the ready state properties (`done`, `error`, `retry`, `stale`) will reflect the ready state of the transition as a whole. However, the `props` object in the `render` callback for a route will be populated as long as the data for that particular route are ready. For example, if a transition does not change the params to the queries for a parent route, the `render` callback for that route will have `props`, even while the `render` callbacks for its child routes may not.
 
-The argument object to the render callback also includes an additional `routerProps` property, which contains the props from the router. Unlike `props`, `routerProps` will be populated regardless of the Relay ready state. This can be used to render child routes while the data for the parent route are still loading, or to otherwise use information from the router to control rendering before the Relay data are available.
+The argument object to the render callback includes two extra properties: `routerProps` and `element`. `routerProps` contains the props from the router, and unlike `props`, will be populated regardless of the Relay ready state. `routerProps` can be used to render child routes while the data for the parent route are still loading, or to otherwise use information from the router to control rendering before the Relay data are available. `element` contains the base route element without the props from Relay, and can be used to render the route component when the route uses a dynamic component, or when using other router middlewares that may wrap the route component:
+
+```js
+({ props, routerProps, element }) => {
+  if (!props) {
+    return <Loading {...routerProps} />;
+  }
+
+  return React.cloneElement(element, props);
+}
+```
 
 When using named components, you can define these on a per-component basis, optionally omitting the callback for components that do not need a custom render callback:
 
