@@ -27,7 +27,8 @@ ReactDOM.render(
     environment={Relay.Store}
   >
     <Route
-      path="/" component={Application}
+      path="/" 
+      component={Application}
       queries={ViewerQueries}
     >
       <Route path="widgets">
@@ -37,7 +38,8 @@ ReactDOM.render(
           prepareParams={prepareWidgetListParams}
         />
         <Route
-          path=":widgetId" component={Widget}
+          path=":widgetId" 
+          component={Widget}
           queries={WidgetQueries}
           render={({ props }) => props ? <Widget {...props} /> : <Loading />}
         />
@@ -94,7 +96,8 @@ const ViewerQueries = {
 
 const applicationRoute = (
   <Route
-    path="/" component={Application}
+    path="/" 
+    component={Application}
     queries={ViewerQueries}
   />
 );
@@ -139,7 +142,8 @@ const Widget = Relay.createContainer(/* ... */, {
 // This handles e.g. /widgets/3.
 const widgetRoute = (
   <Route
-    path="widgets/:widgetId" component={Widget}
+    path="widgets/:widgetId" 
+    component={Widget}
     queries={WidgetQueries}
   />
 );
@@ -191,7 +195,8 @@ function prepareWidgetListParams(params, { location }) {
 // This handles e.g. /widgets?color=blue&size=3.
 const widgetListRoute = (
   <Route
-    path="widgets" component={WidgetList}
+    path="widgets" 
+    component={WidgetList}
     queries={ViewerQueries}
     prepareParams={prepareWidgetListParams}
   />
