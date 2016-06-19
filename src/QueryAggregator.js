@@ -74,7 +74,7 @@ export default class QueryAggregator {
           Relay.isContainer(component),
           'relay-router-relay: Route with queries specifies component `%s` ' +
           'that is not a Relay container.',
-          component.displayName || component.name
+          component && (component.displayName || component.name)
         );
 
         Object.keys(queries).forEach(queryName => {
