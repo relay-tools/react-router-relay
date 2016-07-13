@@ -4,6 +4,9 @@
     { "plugins": ["./fixtures/babelRelayPlugin"] },
     "react",
     "es2015-loose",
+
+    // FIXME: Workaround for https://phabricator.babeljs.io/T7274. This should
+    // be stage-1.
     "stage-0"
   ]
 }
