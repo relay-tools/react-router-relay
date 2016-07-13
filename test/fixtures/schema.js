@@ -1,6 +1,5 @@
-import {
-  GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString,
-} from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString }
+  from 'graphql';
 
 const Widget = new GraphQLObjectType({
   name: 'Widget',
