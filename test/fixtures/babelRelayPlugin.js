@@ -1,5 +1,5 @@
-import getBabelRelayPlugin from 'babel-relay-plugin';
+const getBabelRelayPlugin = require('babel-relay-plugin');
 
-import schema from './schema.json';
+const schema = require('./schema.json');
 
-export default getBabelRelayPlugin(schema.data);
+module.exports = getBabelRelayPlugin(schema.data);
