@@ -27,7 +27,7 @@ ReactDOM.render(
     environment={Relay.Store}
   >
     <Route
-      path="/" 
+      path="/"
       component={Application}
       queries={ViewerQueries}
     >
@@ -38,7 +38,7 @@ ReactDOM.render(
           prepareParams={prepareWidgetListParams}
         />
         <Route
-          path=":widgetId" 
+          path=":widgetId"
           component={Widget}
           queries={WidgetQueries}
           render={({ props }) => props ? <Widget {...props} /> : <Loading />}
@@ -96,7 +96,7 @@ const ViewerQueries = {
 
 const applicationRoute = (
   <Route
-    path="/" 
+    path="/"
     component={Application}
     queries={ViewerQueries}
   />
@@ -142,7 +142,7 @@ const Widget = Relay.createContainer(/* ... */, {
 // This handles e.g. /widgets/3.
 const widgetRoute = (
   <Route
-    path="widgets/:widgetId" 
+    path="widgets/:widgetId"
     component={Widget}
     queries={WidgetQueries}
   />
@@ -195,7 +195,7 @@ function prepareWidgetListParams(params, { location }) {
 // This handles e.g. /widgets?color=blue&size=3.
 const widgetListRoute = (
   <Route
-    path="widgets" 
+    path="widgets"
     component={WidgetList}
     queries={ViewerQueries}
     prepareParams={prepareWidgetListParams}
@@ -268,8 +268,7 @@ We pass through additional props on `<Router>` or the generated router context t
 
 ### Notes
 
-- The default Relay network layer executes each query as a separate request. If you want to execute all of your queries in a single request, then you will need to use a custom network layer that can send multiple queries in the same request, along with a GraphQL server that can execute multiple queries from a single request.
-- `react-router-relay` only updates the Relay query config on actual location changes. Specifically, it will not update the Relay query config after changes to location state, so ensure that you update your container variables appropriately when updating location state.
+- The default Relay network layer executes each query as a separate network request. If you want to execute all of your queries in a single request, then you will need to use a custom network layer that can send multiple queries in the same request, along with a GraphQL server that can execute multiple queries from a single request.
 - `react-router-relay` uses referential equality on route objects to generate unique names for queries. If your `route` objects do not maintain referential equality, then you can specify a globally unique `name` property on the route to identify it.
 - Relay's re-rendering optimizations only work when all non-Relay props are scalar. As the props injected by React Router are objects, they disable these re-rendering optimizations. To take maximum advantage of these optimizations, you should make the `render` methods on your route components as lightweight as possible, and do as much rendering work as possible in child components that only receive scalar and Relay props.
 
