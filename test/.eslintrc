@@ -9,6 +9,9 @@
   "rules": {
     "no-unused-expressions": 0,
     "react/no-multi-comp": 0,
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "import/no-extraneous-dependencies": [2, {
+      "devDependencies": true
+    }]
   }
 }
