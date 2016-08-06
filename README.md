@@ -7,7 +7,7 @@
 
 Apply the `useRelay` router middleware, pass in a Relay environment to `<Router>`, then define Relay queries and render callbacks for each of your routes:
 
-```js
+```jsx
 import useRelay from 'react-router-relay';
 
 /* ... */
@@ -67,7 +67,7 @@ $ npm install react-router-relay
 
 Apply the `useRelay` router middleware, and pass in a Relay environment to the `<Router>`:
 
-```js
+```jsx
 import useRelay from 'react-router-relay';
 
 /* ... */
@@ -89,7 +89,7 @@ ReactDOM.render(
 
 For each of your routes that requires data from Relay, define a `queries` prop on the `<Route>`. These should be just like the queries on a Relay query config:
 
-```js
+```jsx
 const ViewerQueries = {
   viewer: () => Relay.QL`query { viewer }`
 };
@@ -109,7 +109,7 @@ If your route doesn't have any dependencies on Relay data, just don't declare `q
 
 If your route's Relay data dependencies are a function of the location or of the parameters, you can define a `getQueries` function on your route that returns the computed queries as a function of the current router state:
 
-```js
+```jsx
 <Route
   component={Widget}
   getQueries={({ location, params }) => getWidgetQueries(location, params)}
@@ -120,7 +120,7 @@ If your route's Relay data dependencies are a function of the location or of the
 
 Any path parameters for routes with queries and their ancestors will be used as parameters on the Relay query config:
 
-```js
+```jsx
 const WidgetQueries = {
   widget: () => Relay.QL`
     query {
@@ -157,7 +157,7 @@ The `prepareParams` method has the same signature and behavior as `prepareParams
 
 Additionally, you can use route parameters as variables on your containers:
 
-```js
+```jsx
 const WidgetList = Relay.createContainer(/* ... */, {
   initialVariables: {
     color: null,
@@ -207,7 +207,7 @@ const widgetListRoute = (
 
 For routes with named components, define `queries` as an object with the queries for each component by name:
 
-```js
+```jsx
 <Route
   components={{ foo: FooComponent, bar: BarComponent }}
   queries={{ foo: FooQueries, bar: BarQueries }}
@@ -218,7 +218,7 @@ For routes with named components, define `queries` as an object with the queries
 
 You can pass in a custom `render` callback to your routes:
 
-```js
+```jsx
 <Route
   component={WidgetList}
   queries={ViewerQueries}
@@ -232,7 +232,7 @@ While transitioning, the ready state properties (`done`, `error`, `retry`, `stal
 
 The argument object to the render callback includes two extra properties: `routerProps` and `element`. `routerProps` contains the props from the router, and unlike `props`, will be populated regardless of the Relay ready state. `routerProps` can be used to render child routes while the data for the parent route are still loading, or to otherwise use information from the router to control rendering before the Relay data are available. `element` contains the base route element without the props from Relay, and can be used to render the route component when the route uses a dynamic component, or when using other router middlewares that may wrap the route component:
 
-```js
+```jsx
 ({ props, routerProps, element }) => {
   if (!props) {
     return <Loading {...routerProps} />;
@@ -244,7 +244,7 @@ The argument object to the render callback includes two extra properties: `route
 
 When using named components, you can define these on a per-component basis, optionally omitting the callback for components that do not need a custom render callback:
 
-```js
+```jsx
 <Route
   components={{ foo: FooComponent, bar: BarComponent }}
   queries={{ foo: FooQueries, bar: BarQueries }}
@@ -256,7 +256,7 @@ When using named components, you can define these on a per-component basis, opti
 
 We pass through additional props on `<Router>` or the generated router context to the underlying `Relay.Renderer`. You can use this to control props like `forceFetch` on the `Relay.Renderer`:
 
-```js
+```jsx
 <Router
   history={history}
   routes={routes}
