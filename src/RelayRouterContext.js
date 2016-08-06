@@ -6,7 +6,7 @@ import QueryAggregator from './QueryAggregator';
 export default class RelayRouterContext extends React.Component {
   static propTypes = {
     location: React.PropTypes.object.isRequired,
-    children: React.PropTypes.node.isRequired,
+    children: React.PropTypes.element.isRequired,
   };
 
   static childContextTypes = {

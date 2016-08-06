@@ -6,7 +6,7 @@ import mergeRouteParams from './utils/mergeRouteParams';
 const propTypes = {
   queries: React.PropTypes.object.isRequired,
   routerProps: React.PropTypes.object.isRequired,
-  children: React.PropTypes.node.isRequired,
+  children: React.PropTypes.element.isRequired,
 };
 
 const contextTypes = {
