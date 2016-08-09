@@ -8,6 +8,7 @@
 Apply the `useRelay` router middleware, pass in a Relay environment to `<Router>`, then define Relay queries and render callbacks for each of your routes:
 
 ```js
+import { applyRouterMiddleware, /* ... */ } from 'react-router';
 import useRelay from 'react-router-relay';
 
 /* ... */
