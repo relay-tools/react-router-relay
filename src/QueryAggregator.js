@@ -109,8 +109,7 @@ export default class QueryAggregator {
       });
     });
 
-    queryConfig.name =
-      ['$$_aggregated', ...Object.keys(queryConfig.queries)].join('-');
+    queryConfig.name = 'AggregatedReactRouterQueryConfig';
 
     // RootContainer uses referential equality to check for route change, so
     // replace the route object entirely.
