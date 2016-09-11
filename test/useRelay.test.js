@@ -40,7 +40,7 @@ describe('useRelay', () => {
       fragments: {
         widget: () => Relay.QL`
           fragment on Widget {
-            name,
+            name
           }
         `,
       },
@@ -58,7 +58,7 @@ describe('useRelay', () => {
       fragments: {
         widget: () => Relay.QL`
           fragment on Widget {
-            name,
+            name
           }
         `,
       },
