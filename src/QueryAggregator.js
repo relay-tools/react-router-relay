@@ -1,12 +1,11 @@
 import invariant from 'invariant';
 import isEqual from 'lodash/isEqual';
 import Relay from 'react-relay';
-import generateRQLFieldAlias from 'react-relay/lib/generateRQLFieldAlias';
 
 import getRouteQueries from './utils/getRouteQueries';
 import mergeRouteParams from './utils/mergeRouteParams';
 
-const DEFAULT_KEY = '@@default';
+const DEFAULT_KEY = '_default';
 
 export default class QueryAggregator {
   constructor(routerProps) {
@@ -110,9 +109,8 @@ export default class QueryAggregator {
       });
     });
 
-    queryConfig.name = generateRQLFieldAlias(
-      `ReactRouterRelay.${Object.keys(queryConfig.queries).join('-')}`,
-    );
+    queryConfig.name =
+      ['_aggregated', ...Object.keys(queryConfig.queries)].join('_');
 
     // RootContainer uses referential equality to check for route change, so
     // replace the route object entirely.
@@ -129,7 +127,7 @@ export default class QueryAggregator {
     if (route.name) {
       // The slightly different template here ensures that we can't have
       // collisions with the below template.
-      return `$_${route.name}_${key}_${queryName}`;
+      return `_${route.name}_${key}_${queryName}`;
     }
 
     // Otherwise, use referential equality on the route name to generate a
@@ -140,7 +138,7 @@ export default class QueryAggregator {
       this.routeIndices.set(route, routeIndex);
     }
 
-    return `$$_route[${routeIndex}]_${key}_${queryName}`;
+    return `__route_${routeIndex}_${key}_${queryName}`;
   }
 
   setRenderArgs({ props, ...readyState }) {
