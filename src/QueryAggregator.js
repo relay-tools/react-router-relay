@@ -1,6 +1,7 @@
 import invariant from 'invariant';
 import isEqual from 'lodash/isEqual';
 import Relay from 'react-relay';
+import generateRQLFieldAlias from 'react-relay/lib/generateRQLFieldAlias';
 
 import getRouteQueries from './utils/getRouteQueries';
 import mergeRouteParams from './utils/mergeRouteParams';
@@ -109,7 +110,9 @@ export default class QueryAggregator {
       });
     });
 
-    queryConfig.name = 'AggregatedReactRouterQueryConfig';
+    queryConfig.name = generateRQLFieldAlias(
+      `ReactRouterRelay.${Object.keys(queryConfig.queries).join('-')}`,
+    );
 
     // RootContainer uses referential equality to check for route change, so
     // replace the route object entirely.
