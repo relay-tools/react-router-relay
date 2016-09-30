@@ -14,10 +14,15 @@ describe('useRelay', () => {
   let environment;
 
   beforeEach(() => {
-    environment = new Relay.Environment();
-    environment.injectNetworkLayer(
-      new RelayLocalSchema.NetworkLayer({ schema })
-    );
+    environment = () => {
+      const env = new Relay.Environment();
+      env.injectNetworkLayer(
+        new RelayLocalSchema.NetworkLayer({ schema })
+      );
+      return env;
+    };
+    environment = Math.floor(Math.random() * 2) > 0
+      ? environment() : environment;
   });
 
   describe('kitchen sink', () => {

@@ -5,11 +5,18 @@ import RouteContainer from './RouteContainer';
 import getRouteQueries from './utils/getRouteQueries';
 
 export default {
-  renderRouterContext: (child, props) => (
-    <RelayRouterContext {...props}>
-      {child}
-    </RelayRouterContext>
-  ),
+  renderRouterContext: (child, props) => {
+    /* eslint-disable react/prop-types */
+    const environment = typeof props.environment === 'function' ?
+      props.environment() : props.environment;
+    /* eslint-enable react/prop-types */
+
+    return (
+      <RelayRouterContext {...Object.assign({}, props, { environment })}>
+        {child}
+      </RelayRouterContext>
+    );
+  },
 
   renderRouteComponent: (child, props) => {
     /* eslint-disable react/prop-types */
