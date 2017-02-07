@@ -152,7 +152,7 @@ const widgetRoute = (
 
 #### Additional parameters
 
-If your queries require additional parameters from the location, such as from the location query or state, you can add those parameters with `prepareParams`. You can also use `prepareParams` to do additional conversion or initialization of your parameters.
+If your queries require additional parameters from the location, such as from the location query or state, you can add those parameters with `prepareParams`. You can also use `prepareParams` to do additional conversion or initialization of your parameters. This function is expected to be pure and return the same result when given the same `params`, `location` and `routes`.
 
 The `prepareParams` method has the same signature and behavior as `prepareParams` on a Relay query config, except that it also receives the current router state as an argument.
 
