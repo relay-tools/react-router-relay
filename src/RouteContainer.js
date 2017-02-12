@@ -15,7 +15,7 @@ const contextTypes = {
 
 function RouteContainer(
   { queries, routerProps, children, ...extraProps },
-  { queryAggregator }
+  { queryAggregator },
 ) {
   const { key, route, routes } = routerProps;
 

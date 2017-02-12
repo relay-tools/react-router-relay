@@ -1,9 +1,8 @@
 import React from 'react';
-import ReactTestUtils from 'react/lib/ReactTestUtils';
+import ReactTestUtils from 'react-addons-test-utils';
 import Relay from 'react-relay';
-import {
-  applyRouterMiddleware, createMemoryHistory, Route, Router,
-} from 'react-router';
+import { applyRouterMiddleware, createMemoryHistory, Route, Router }
+  from 'react-router';
 import RelayLocalSchema from 'relay-local-schema';
 
 import useRelay from '../src';
@@ -16,7 +15,7 @@ describe('useRelay', () => {
   beforeEach(() => {
     environment = new Relay.Environment();
     environment.injectNetworkLayer(
-      new RelayLocalSchema.NetworkLayer({ schema })
+      new RelayLocalSchema.NetworkLayer({ schema }),
     );
   });
 
@@ -93,7 +92,7 @@ describe('useRelay', () => {
     let renderSpy;
     let instance;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       // This is declared on the parent route to capture the loading lifecycle,
       // because we don't render the child routes until the parent route is
       // ready.
@@ -162,7 +161,7 @@ describe('useRelay', () => {
       ].forEach(([condition, className]) => {
         it(`should support ${condition}`, () => {
           ReactTestUtils.findRenderedDOMComponentWithClass(
-            instance, className
+            instance, className,
           );
         });
       });
