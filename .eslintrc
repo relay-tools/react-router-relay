@@ -1,12 +1,3 @@
 {
-  "extends": "airbnb",
-  "parser": "babel-eslint",
-  "rules": {
-    "max-len": [2, 79, {
-      "ignorePattern": " // eslint-disable-line "
-    }],
-    "react/jsx-filename-extension": [2, {
-      "extensions": [".js"]
-    }]
-  }
+  "extends": "4catalyzer-react"
 }

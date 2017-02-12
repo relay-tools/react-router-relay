@@ -38,7 +38,7 @@ export default class QueryAggregator {
       // We need to merge in the route params regardless of whether the route
       // actually has queries, in case its children depend on its path params.
       queryConfig.params = mergeRouteParams(
-        queryConfig.params, route, routerProps
+        queryConfig.params, route, routerProps,
       );
 
       const routeQueries = getRouteQueries(route, routerProps);
@@ -58,7 +58,7 @@ export default class QueryAggregator {
         queryMap = { [DEFAULT_KEY]: routeQueries };
       }
 
-      Object.keys(componentMap).forEach(key => {
+      Object.keys(componentMap).forEach((key) => {
         const component = componentMap[key];
         const queries = queryMap[key];
 
@@ -74,10 +74,10 @@ export default class QueryAggregator {
           Relay.isContainer(component),
           'relay-router-relay: Route with queries specifies component `%s` ' +
           'that is not a Relay container.',
-          component && (component.displayName || component.name)
+          component && (component.displayName || component.name),
         );
 
-        Object.keys(queries).forEach(queryName => {
+        Object.keys(queries).forEach((queryName) => {
           const query = queries[queryName];
           const uniqueQueryName =
             this.getUniqueQueryName(route, key, queryName);
@@ -202,7 +202,7 @@ export default class QueryAggregator {
     // It doesn't matter what the component variables are. The only variables
     // we're going to pass down are the ones defined from our route parameters.
     return Object.prototype.hasOwnProperty.call(
-      this.queryConfig.params, variableName
+      this.queryConfig.params, variableName,
     );
   }
 }
