@@ -1,21 +1,22 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import StaticContainer from 'react-static-container';
 
 import mergeRouteParams from './utils/mergeRouteParams';
 
 const propTypes = {
-  queries: React.PropTypes.object.isRequired,
-  routerProps: React.PropTypes.object.isRequired,
-  children: React.PropTypes.element.isRequired,
+  queries: PropTypes.object.isRequired,
+  routerProps: PropTypes.object.isRequired,
+  children: PropTypes.element.isRequired,
 };
 
 const contextTypes = {
-  queryAggregator: React.PropTypes.object.isRequired,
+  queryAggregator: PropTypes.object.isRequired,
 };
 
 function RouteContainer(
   { queries, routerProps, children, ...extraProps },
-  { queryAggregator }
+  { queryAggregator },
 ) {
   const { key, route, routes } = routerProps;
 

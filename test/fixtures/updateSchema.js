@@ -13,6 +13,6 @@ import schema from './schema';
 
   fs.writeFileSync(
     path.join(__dirname, 'schema.json'),
-    JSON.stringify(result, null, 2)
+    JSON.stringify(result, null, 2),
   );
 })();
