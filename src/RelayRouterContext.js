@@ -1,18 +1,19 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Relay from 'react-relay';
 
 import QueryAggregator from './QueryAggregator';
 
-export default class RelayRouterContext extends React.Component {
-  static propTypes = {
-    location: React.PropTypes.object.isRequired,
-    children: React.PropTypes.element.isRequired,
-  };
+const propTypes = {
+  location: PropTypes.object.isRequired,
+  children: PropTypes.element.isRequired,
+};
 
-  static childContextTypes = {
-    queryAggregator: React.PropTypes.object.isRequired,
-  };
+const childContextTypes = {
+  queryAggregator: React.PropTypes.object.isRequired,
+};
 
+class RelayRouterContext extends React.Component {
   constructor(props, context) {
     super(props, context);
 
@@ -49,3 +50,8 @@ export default class RelayRouterContext extends React.Component {
     );
   }
 }
+
+RelayRouterContext.propTypes = propTypes;
+RelayRouterContext.childContextTypes = childContextTypes;
+
+export default RelayRouterContext;
