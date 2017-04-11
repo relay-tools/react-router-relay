@@ -10,7 +10,7 @@ const propTypes = {
 };
 
 const childContextTypes = {
-  queryAggregator: React.PropTypes.object.isRequired,
+  queryAggregator: PropTypes.object.isRequired,
 };
 
 class RelayRouterContext extends React.Component {
