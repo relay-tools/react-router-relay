@@ -43,7 +43,7 @@
   },
   "peerDependencies": {
     "react": "^0.14.9 || >=15.3.0",
-    "react-relay": ">=0.6.0 <1.0.0",
+    "react-relay": ">=1.0.0",
     "react-router": "^2.3.0 || ^3.0.0"
   },
   "devDependencies": {
@@ -80,7 +80,7 @@
     "mocha": "^3.4.2",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "react-relay": "^0.10.0",
+    "react-relay": "^1.0.0",
     "react-router": "^2.8.0",
     "relay-local-schema": "^0.5.5",
     "rimraf": "^2.6.1",
