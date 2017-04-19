@@ -1,6 +1,6 @@
 {
   "name": "react-router-relay",
-  "version": "0.13.7",
+  "version": "dev",
   "description": "Relay integration for React Router",
   "files": [
     "es",
@@ -80,7 +80,7 @@
     "mocha": "^3.2.0",
     "react": "^15.5.3",
     "react-dom": "^15.5.3",
-    "react-relay": "^0.10.0",
+    "react-relay": "dev",
     "react-router": "^2.8.0",
     "relay-local-schema": "^0.5.5",
     "rimraf": "^2.6.1",

@@ -1,6 +1,6 @@
 import invariant from 'invariant';
 import isEqual from 'lodash/isEqual';
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic';
 
 import getRouteQueries from './utils/getRouteQueries';
 import mergeRouteParams from './utils/mergeRouteParams';
