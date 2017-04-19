@@ -1,6 +1,6 @@
 {
   "name": "react-router-relay",
-  "version": "dev",
+  "version": "0.14.0-alpha.1",
   "description": "Relay integration for React Router",
   "files": [
     "es",
