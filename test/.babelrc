@@ -7,6 +7,6 @@
     "react"
   ],
   "plugins": [
-    "./fixtures/babelRelayPlugin"
+    ["relay", { "schema": "test/fixtures/schema.graphql" }]
   ]
 }

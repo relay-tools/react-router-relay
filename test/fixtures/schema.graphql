@@ -1,0 +1,8 @@
+type Query {
+  widget: Widget
+  widgetByArg(name: String!): Widget
+}
+
+type Widget {
+  name: String
+}

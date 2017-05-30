@@ -43,7 +43,7 @@
   },
   "peerDependencies": {
     "react": "^0.14.9 || >=15.3.0",
-    "react-relay": ">=0.6.0 <1.0.0",
+    "react-relay": ">=1.0.0",
     "react-router": "^2.3.0 || ^3.0.0"
   },
   "devDependencies": {
@@ -53,13 +53,13 @@
     "babel-loader": "^7.0.0",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-dev-expression": "^0.2.1",
+    "babel-plugin-relay": "^1.0.1",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-latest": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
     "babel-register": "^6.24.1",
-    "babel-relay-plugin": "^0.10.0",
     "chai": "^3.5.0",
     "cross-env": "^5.0.0",
     "eslint": "^3.19.0",
@@ -80,7 +80,7 @@
     "mocha": "^3.4.2",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "react-relay": "^0.10.0",
+    "react-relay": "^1.0.0",
     "react-router": "^2.8.0",
     "relay-local-schema": "^0.5.5",
     "rimraf": "^2.6.1",
