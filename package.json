@@ -39,6 +39,7 @@
     "invariant": "^2.2.2",
     "lodash": "^4.17.4",
     "prop-types": "^15.5.10",
+    "react-is": "^16.8.6",
     "react-static-container": "^1.0.1"
   },
   "peerDependencies": {
