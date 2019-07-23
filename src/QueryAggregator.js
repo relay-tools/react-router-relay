@@ -51,7 +51,10 @@ export default class QueryAggregator {
 
       let componentMap;
       let queryMap;
-      if (typeof routeComponent === 'object' && !isValidElementType(routeComponent)) {
+      if (
+        typeof routeComponent === 'object' &&
+        !isValidElementType(routeComponent)
+      ) {
         componentMap = routeComponent;
         queryMap = routeQueries;
       } else {
