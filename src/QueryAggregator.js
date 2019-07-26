@@ -1,6 +1,7 @@
 import invariant from 'invariant';
 import isEqual from 'lodash/isEqual';
 import Relay from 'react-relay/classic';
+import { isValidElementType } from 'react-is';
 
 import getRouteQueries from './utils/getRouteQueries';
 import mergeRouteParams from './utils/mergeRouteParams';
@@ -50,7 +51,10 @@ export default class QueryAggregator {
 
       let componentMap;
       let queryMap;
-      if (typeof routeComponent === 'object') {
+      if (
+        typeof routeComponent === 'object' &&
+        !isValidElementType(routeComponent)
+      ) {
         componentMap = routeComponent;
         queryMap = routeQueries;
       } else {
